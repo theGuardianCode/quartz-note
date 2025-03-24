@@ -37,7 +37,7 @@ const createWindow = () => {
         {
           label: 'Open File',
           click: async () => {
-            const { canceled, filePaths} = await dialog.showOpenDialog({});
+            const { canceled, filePaths } = await dialog.showOpenDialog({});
             if (!canceled) {
               fs.readFile(filePaths[0], 'utf-8', (err, data) => {
                 if (err) throw err;
@@ -45,6 +45,11 @@ const createWindow = () => {
               })
             }
           },
+        },
+        {
+          label: 'Save File',
+          click: () => {
+          }
         }
       ]
     }
