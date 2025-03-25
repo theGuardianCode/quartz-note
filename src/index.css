@@ -1,0 +1,14 @@
+.markdown-viewer {
+    display: flex;
+    flex-direction: column;
+}
+
+.markdown-viewer h1 {
+    margin-bottom: 10px;
+}
+
+.link {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+}

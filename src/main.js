@@ -7,12 +7,6 @@ if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
-ipcMain.handle('writeFile', (_event, file, content) => {
-  fs.writeFile(file, content, (err) => {
-    if (err) throw err;
-  })
-});
-
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -30,6 +24,19 @@ const createWindow = () => {
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
 
+  ipcMain.handle('openFile', (_event, filePath) => {
+    return fs.readFile(filePath, 'utf-8', (err, data) => {
+      if (err) throw err;
+      mainWindow.webContents.send('open-file', filePath, data);
+    })
+  });
+
+  ipcMain.handle('writeFile', (_event, file, content) => {
+    fs.writeFile(file, content, (err) => {
+      if (err) throw err;
+    })
+  });
+
   const menuTemplate = [
     {
       label: 'File',
@@ -41,7 +48,7 @@ const createWindow = () => {
             if (!canceled) {
               fs.readFile(filePaths[0], 'utf-8', (err, data) => {
                 if (err) throw err;
-                mainWindow.webContents.send('open-file', filePaths[0], data);
+                mainWindow.webContents.send('open-file', filePaths[0], data)
               })
             }
           },

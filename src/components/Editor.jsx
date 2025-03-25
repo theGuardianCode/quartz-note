@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const Editor = ({isEditing, buffer, setBuffer}) => {
     const handleChange = event => {

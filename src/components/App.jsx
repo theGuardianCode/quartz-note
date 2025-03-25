@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Editor from './Editor.jsx';
 import Viewer from './Viewer.jsx';
 
@@ -17,6 +17,10 @@ const App = () => {
         await window.myFS.writeFile(filePath, buffer);
     }
 
+    const changeFile = async (filePath) => {
+        await window.myFS.openFile(filePath);
+    }
+
     window.myFS.onOpenFile((filePath, contents) => {
         setFilePath(filePath);
         setBuffer(contents);
@@ -29,7 +33,7 @@ const App = () => {
             <button onClick={handleToggle}>Toggle</button>
             <button onClick={handleSave}>Save</button>
             <Editor isEditing={editing} buffer={buffer} setBuffer={setBuffer}/>
-            <Viewer isEditing={editing} buffer={buffer}/>
+            <Viewer isEditing={editing} buffer={buffer} setFilePath={changeFile}/>
         </>
     );
 };

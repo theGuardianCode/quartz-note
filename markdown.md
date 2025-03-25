@@ -6,3 +6,5 @@ more text blah blahblah
 - item 1
 - item 2
 - item 3
+
+[test](test.md)
