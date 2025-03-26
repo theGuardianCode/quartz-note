@@ -9,8 +9,6 @@ const Viewer = ({isEditing, buffer, setFilePath}) => {
                 components={{
                     a(props) {
                         const {children, href} = props;
-                        console.log(props);
-                        console.log(href);
                         return <a className="link" onClick={() => setFilePath(href)}>{children}</a>
                     }
                 }}

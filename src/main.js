@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, Menu, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, dialog, globalShortcut } = require('electron');
 const path = require('node:path');
 const fs = require('fs');
 
@@ -25,10 +25,12 @@ const createWindow = () => {
   mainWindow.webContents.openDevTools();
 
   ipcMain.handle('openFile', (_event, filePath) => {
-    return fs.readFile(filePath, 'utf-8', (err, data) => {
-      if (err) throw err;
-      mainWindow.webContents.send('open-file', filePath, data);
-    })
+    if (filePath != undefined) {
+      return fs.readFile(filePath, 'utf-8', (err, data) => {
+        if (err) throw err;
+        mainWindow.webContents.send('open-file', filePath, data);
+      })
+    }
   });
 
   ipcMain.handle('writeFile', (_event, file, content) => {
@@ -43,6 +45,7 @@ const createWindow = () => {
       submenu: [
         {
           label: 'Open File',
+          accelerator: "Ctrl+O",
           click: async () => {
             const { canceled, filePaths } = await dialog.showOpenDialog({});
             if (!canceled) {
@@ -56,6 +59,13 @@ const createWindow = () => {
         {
           label: 'Save File',
           click: () => {
+          }
+        },
+        {
+          label: 'Navigate Back',
+          accelerator: "Ctrl+Backspace",
+          click: () => {
+            mainWindow.webContents.send('navigate-back');
           }
         }
       ]

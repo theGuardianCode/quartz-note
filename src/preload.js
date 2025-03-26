@@ -6,4 +6,5 @@ contextBridge.exposeInMainWorld('myFS', {
     writeFile: (file, content) => ipcRenderer.invoke('writeFile', file, content),
     openFile: (filePath) => ipcRenderer.invoke('openFile', filePath),
     onOpenFile: (callback) => ipcRenderer.on('open-file', (_event, filePath, contents) => callback(filePath, contents)),
+    onNavigateBack: (callback) => ipcRenderer.on('navigate-back', (_event) => callback()) 
 });
