@@ -5,3 +5,5 @@ bazinga
 
 - [ ] checkbox
 - [X] completed checkbox
+
+$x^2$

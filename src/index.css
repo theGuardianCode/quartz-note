@@ -12,3 +12,7 @@
     text-decoration: underline;
     cursor: pointer;
 }
+
+.katex-html {
+    display: none;
+}
