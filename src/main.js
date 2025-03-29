@@ -44,14 +44,18 @@ const createWindow = () => {
       label: 'File',
       submenu: [
         {
-          label: 'Open File',
+          label: 'Open Folder',
           accelerator: "Ctrl+O",
           click: async () => {
-            const { canceled, filePaths } = await dialog.showOpenDialog({});
+            const { canceled, filePaths } = await dialog.showOpenDialog({properties: ['openDirectory']});
             if (!canceled) {
-              fs.readFile(filePaths[0], 'utf-8', (err, data) => {
+              // fs.readFile(filePaths[0], 'utf-8', (err, data) => {
+              //   if (err) throw err;
+              //   mainWindow.webContents.send('open-folder', filePaths[0], data)
+              // })
+              return fs.readdir(filePaths[0], (err, files) => {
                 if (err) throw err;
-                mainWindow.webContents.send('open-file', filePaths[0], data)
+                mainWindow.webContents.send('open-folder', files)
               })
             }
           },
@@ -63,9 +67,21 @@ const createWindow = () => {
         },
         {
           label: 'Navigate Back',
-          accelerator: "Ctrl+Backspace",
+          accelerator: 'Ctrl+Backspace',
           click: () => {
             mainWindow.webContents.send('navigate-back');
+          }
+        }
+      ]
+    },
+    {
+      label: 'Edit',
+      submenu: [
+        {
+          label: 'Toggle Mode',
+          accelerator: 'Ctrl+T',
+          click: () => {
+            mainWindow.webContents.send('toggle-mode');
           }
         }
       ]

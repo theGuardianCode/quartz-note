@@ -1,10 +1,5 @@
-.markdown-viewer {
-    display: flex;
-    flex-direction: column;
-}
-
-.markdown-viewer h1 {
-    margin-bottom: 10px;
+body {
+    margin: 0;
 }
 
 .link {
@@ -15,4 +10,29 @@
 
 .katex-html {
     display: none;
+}
+
+.container {
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+}
+
+.file-explorer {
+    border-right: 2px solid black;
+    padding: 5px 15px;
+}
+
+.file-explorer ul {
+    padding: 0px;
+}
+
+.file-explorer li {
+    list-style: none;
+    cursor: pointer;
+}
+
+.pane {
+    display: flex;
+    flex-direction: column;
 }

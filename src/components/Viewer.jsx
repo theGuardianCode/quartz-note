@@ -20,6 +20,6 @@ const Viewer = ({isEditing, buffer, setFilePath}) => {
     }
 
     return null;
-}
+};
 
 export default Viewer;
