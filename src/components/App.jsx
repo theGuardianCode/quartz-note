@@ -50,7 +50,7 @@ const App = () => {
     return (
         <div className="container">
             <div className="file-explorer">
-               <FileExplorer fileList={fileList} changeFile={changeFile}/> 
+               <FileExplorer fileList={fileList} setFileList={setFileList} changeFile={changeFile}/> 
             </div>
             <div className="pane">
                 <h3>{filePath}</h3>

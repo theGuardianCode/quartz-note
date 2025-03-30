@@ -7,6 +7,8 @@ if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
+let fileID = 0;
+
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -24,6 +26,17 @@ const createWindow = () => {
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
 
+  const openFolder = (filePath) => {
+    const contents = fs.readdirSync(filePath, {withFileTypes: true})
+
+    const files = [];
+    for (let i = 0; i < contents.length; i++) {
+      files.push({id: fileID++, name: contents[i].name, absolutePath: filePath + "\\" + contents[i].name, dir: contents[i].isDirectory()});
+    }
+
+    return files;
+  };
+
   ipcMain.handle('openFile', (_event, filePath) => {
     if (filePath != undefined) {
       return fs.readFile(filePath, 'utf-8', (err, data) => {
@@ -39,6 +52,11 @@ const createWindow = () => {
     })
   });
 
+  ipcMain.handle('openFolder', (_event, path) => {
+    const files = openFolder(path);
+    return files;
+  });
+
   const menuTemplate = [
     {
       label: 'File',
@@ -49,14 +67,8 @@ const createWindow = () => {
           click: async () => {
             const { canceled, filePaths } = await dialog.showOpenDialog({properties: ['openDirectory']});
             if (!canceled) {
-              // fs.readFile(filePaths[0], 'utf-8', (err, data) => {
-              //   if (err) throw err;
-              //   mainWindow.webContents.send('open-folder', filePaths[0], data)
-              // })
-              return fs.readdir(filePaths[0], (err, files) => {
-                if (err) throw err;
-                mainWindow.webContents.send('open-folder', files)
-              })
+              const files = openFolder(filePaths[0]);
+              mainWindow.webContents.send('open-folder', files);
             }
           },
         },
