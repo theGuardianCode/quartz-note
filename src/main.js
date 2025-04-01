@@ -74,7 +74,9 @@ const createWindow = () => {
         },
         {
           label: 'Save File',
+          accelerator: 'Ctrl+S',
           click: () => {
+            mainWindow.webContents.send('save-file');
           }
         },
         {

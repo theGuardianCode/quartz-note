@@ -9,7 +9,7 @@ const Editor = ({isEditing, buffer, setBuffer}) => {
     if (isEditing) {
         return (
             <>
-                <textarea rows="20" onChange={handleChange} value={buffer}></textarea><br/>
+                <textarea className="markdown-editor" rows="20" onChange={handleChange} value={buffer}></textarea><br/>
             </>
         );
     }

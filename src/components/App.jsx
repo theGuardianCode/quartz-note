@@ -34,6 +34,10 @@ const App = () => {
         window.myFS.onOpenFolder((files) => {
             setFileList(files);
         });
+
+        window.myFS.onSaveFile( async () => {
+            await handleSave();
+        })
     
         window.myFS.onNavigateBack( async () => {
             if (history.current.length > 0) {

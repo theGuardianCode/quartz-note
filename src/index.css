@@ -35,5 +35,12 @@ body {
 .pane {
     display: flex;
     flex-direction: column;
-    margin: 15px
+    margin: 15px;
+    width: 100%;
+}
+
+.markdown-editor {
+    width: 100%;
+    border: none;
+    outline: none;
 }
