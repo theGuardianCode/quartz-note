@@ -1,23 +1,26 @@
 <script setup>
-import { EventsOn } from '../../wailsjs/runtime/runtime';
+import { EventsOn } from '../../wailsjs/runtime/runtime'
+import { ref, watch } from 'vue'
 
-import { ref } from 'vue'
+const props = defineProps({
+  buffer: String
+})
+const emit = defineEmits(['updateBuffer'])
 
-let editing = ref(false);
-let input = ref("");
+let editing = ref(false)
 
 function toggle() {
-  editing.value = !editing.value;
+  editing.value = !editing.value
 }
 
-EventsOn("toggle-edit", toggle);
+EventsOn("toggle-edit", toggle)
 </script>
 
 <template>
   <div class="container">
     <div class="pane">
-      <textarea v-if="editing" v-model="input"></textarea>
-      <p v-else>{{ input }}</p>
+      <textarea v-if="editing" :value="buffer"></textarea>
+      <p v-else>{{ props.buffer }}</p>
     </div>
   </div>
 </template>
@@ -35,7 +38,7 @@ textarea {
 .container {
   display: flex;
   flex-direction: column;
-  height: 98%;
+  width: 100%;
   padding: 5px;
 }
 
