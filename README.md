@@ -1,11 +1,8 @@
-# README
+# Quartz Note
 
 ## About
 
-This is the official Wails Vue template.
-
-You can configure the project by editing `wails.json`. More information about the project settings can be found
-here: https://wails.io/docs/reference/project-config
+Quartz Note is a markdown notetaking app designed for students. Built with [Wails](https://wails.io/) and [Vue 3](https://vuejs.org/), Quartz Note aims to be faster and more lightweight than popular alternatives such as Obsidian and Notion.
 
 ## Live Development
 

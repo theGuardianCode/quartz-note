@@ -24,6 +24,10 @@ function toggle() {
   // }
 }
 
+function handleInput(e) {
+  emit('updateBuffer', e.target.value)
+}
+
 function renderHtml(html) {
   htmlContents.value = marked.parse(html)
 }
@@ -39,7 +43,7 @@ EventsOn("toggle-edit", toggle)
 <template>
   <div class="container">
     <div class="pane">
-      <textarea v-if="editing" :value="buffer"></textarea>
+      <textarea v-if="editing" @input="handleInput">{{ buffer }}</textarea>
       <p v-else v-html="htmlContents"></p>
     </div>
   </div>

@@ -17,3 +17,13 @@ func (fs *FileSystem) OpenFile(filePath string) string {
 
 	return string(contents)
 }
+
+func (fs *FileSystem) SaveFile(filePath string, contents string) {
+	contentsBytes := []byte(contents)
+	fullPath := fs.workingDir + "/" + filePath
+
+	err := os.WriteFile(fullPath, contentsBytes, 0644)
+	if err != nil {
+		panic(err)
+	}
+}

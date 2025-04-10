@@ -19,8 +19,8 @@ var assets embed.FS
 
 func main() {
 	// Create an instance of the app structure
-	app := NewApp()
 	fs := &FileSystem{}
+	app := NewApp(fs)
 
 	AppMenu := menu.NewMenu()
 	if gr.GOOS == "darwin" {
@@ -47,8 +47,11 @@ func main() {
 			fileMap = append(fileMap, entry)
 		}
 
-		fs.workingDir = directory
+		app.fileSystem.workingDir = directory
 		runtime.EventsEmit(app.ctx, "open-directory", fileMap)
+	})
+	FileMenu.AddText("Save", keys.CmdOrCtrl("s"), func(_ *menu.CallbackData) {
+		runtime.EventsEmit(app.ctx, "save-file")
 	})
 
 	EditMenu := AppMenu.AddSubmenu("Edit")
@@ -59,7 +62,6 @@ func main() {
 	if gr.GOOS == "darwin" {
 		AppMenu.Append(menu.EditMenu())
 	}
-
 	// Create application with options
 	err := wails.Run(&options.App{
 		Title:  "Quartz Note",
@@ -69,7 +71,7 @@ func main() {
 			Assets: assets,
 		},
 		BackgroundColour: &options.RGBA{R: 255, G: 255, B: 255, A: 1},
-		OnStartup:        app.startup,
+		OnDomReady:       app.startup,
 		Menu:             AppMenu,
 		Bind: []interface{}{
 			app,

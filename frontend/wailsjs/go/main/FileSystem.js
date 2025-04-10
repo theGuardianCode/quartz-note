@@ -5,3 +5,7 @@
 export function OpenFile(arg1) {
   return window['go']['main']['FileSystem']['OpenFile'](arg1);
 }
+
+export function SaveFile(arg1, arg2) {
+  return window['go']['main']['FileSystem']['SaveFile'](arg1, arg2);
+}
