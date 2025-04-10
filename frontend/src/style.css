@@ -3,6 +3,11 @@ html {
     color: black;
 }
 
+pre {
+    white-space: pre-wrap;
+    background-color: lightgray;
+}
+
 body {
     margin: 0;
 }

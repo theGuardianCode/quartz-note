@@ -21,7 +21,10 @@ function handleClick(filename) {
 <style scoped>
 ul {
   text-align: left;
-  padding: 0 15px;
+  width: 20%;
+  height: 100%;
+  position: fixed;
+  padding: 0 1% 0 1%;
 }
 
 li {

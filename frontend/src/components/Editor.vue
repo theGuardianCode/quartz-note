@@ -1,6 +1,12 @@
 <script setup>
+import { marked } from 'marked'
 import { EventsOn } from '../../wailsjs/runtime/runtime'
 import { ref, watch } from 'vue'
+
+marked.use({
+  gfm: true,
+  breaks: true,
+})
 
 const props = defineProps({
   buffer: String
@@ -8,11 +14,25 @@ const props = defineProps({
 const emit = defineEmits(['updateBuffer'])
 
 let editing = ref(false)
+let htmlContents = ref('')
 
 function toggle() {
   editing.value = !editing.value
+
+  // if (!editing.value) {
+  //   renderHtml(props.buffer)
+  // }
 }
 
+function renderHtml(html) {
+  htmlContents.value = marked.parse(html)
+}
+
+watch(() => props.buffer, (newBuffer) => {
+  renderHtml(newBuffer)
+})
+
+// Wails event handler
 EventsOn("toggle-edit", toggle)
 </script>
 
@@ -20,7 +40,7 @@ EventsOn("toggle-edit", toggle)
   <div class="container">
     <div class="pane">
       <textarea v-if="editing" :value="buffer"></textarea>
-      <p v-else>{{ props.buffer }}</p>
+      <p v-else v-html="htmlContents"></p>
     </div>
   </div>
 </template>
@@ -38,8 +58,10 @@ textarea {
 .container {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 80%;
   padding: 5px;
+  text-align: left;
+  margin-left: 22%;
 }
 
 .pane {
