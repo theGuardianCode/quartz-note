@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"strconv"
 )
 
 type FileSystem struct {
@@ -16,6 +17,26 @@ func (fs *FileSystem) OpenFile(filePath string) string {
 	}
 
 	return string(contents)
+}
+
+func (fs *FileSystem) ReadDir(dir string) []map[string]string {
+	fullPath := fs.workingDir + "/" + dir
+
+	files, err := os.ReadDir(fullPath)
+	if err != nil {
+		panic(err)
+	}
+
+	var fileMap []map[string]string
+	for _, file := range files {
+		entry := make(map[string]string)
+		entry["name"] = file.Name()
+		entry["isDir"] = strconv.FormatBool(file.Type().IsDir())
+		entry["expanded"] = "false"
+		fileMap = append(fileMap, entry)
+	}
+
+	return fileMap
 }
 
 func (fs *FileSystem) SaveFile(filePath string, contents string) {

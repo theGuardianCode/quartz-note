@@ -1,19 +1,54 @@
 <script setup>
-const props = defineProps({
-  files: Array
-})
+import { EventsOn } from '../../wailsjs/runtime/runtime'
+import { ReadDir } from '../../wailsjs/go/main/FileSystem'
+import { ref, computed, watch } from 'vue'
+
+import FileElement from './FileElement.vue'
+
 const emit = defineEmits(['changeFile'])
+
+const fileList = ref([])
+
+EventsOn("open-directory", (files) => {
+  // Reset file list
+  fileList.value = []
+
+  for (let i = 0; i < files.length; i++) {
+    fileList.value.push({name: files[i].name, isDir: files[i].isDir, children: [], expanded: false})
+  }
+})
 
 function handleClick(filename) {
   emit('changeFile', filename)
+}
+
+function handleFolder(folder) {
+  let parentDir = -1;
+  for (let i = 0; i < fileList.value.length; i++) {
+    if (fileList.value[i].name == folder) {
+      parentDir = i
+    }
+  }
+
+  if (fileList.value[parentDir].expanded === false) {
+    ReadDir(folder).then((contents) => {
+      fileList.value[parentDir].children = []
+      
+      // Insert folder contents into parent dir's children element
+      for (let i = 0; i < contents.length; i++) {
+        fileList.value[parentDir].children.push({name: folder + "/" + contents[i].name, isDir: contents[i].isDir, children: [], expanded: false})
+      }
+    })
+  } 
+
+  fileList.value[parentDir].expanded = !fileList.value[parentDir].expanded;
 }
 </script>
 
 <template>
   <ul>
-    <li v-for="file in files">
-      <p v-if="file.isDir === 'true'">> {{ file.name }}</p>
-      <p v-else @click="() => handleClick(file.name)"> {{ file.name }} </p>
+    <li v-for="elem in fileList">
+      <FileElement :entry="elem" :fileClick="handleClick" :folderClick="handleFolder" />
     </li>
   </ul>
 </template>
@@ -25,6 +60,9 @@ ul {
   height: 100%;
   position: fixed;
   padding: 0 1% 0 1%;
+  overflow: scroll;
+  border-right: 1px solid black;
+  margin: 0;
 }
 
 li {

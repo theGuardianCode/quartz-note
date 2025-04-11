@@ -5,14 +5,8 @@ import Editor from './components/Editor.vue'
 import FileExplorer from './components/FileExplorer.vue'
 import { OpenFile } from '../wailsjs/go/main/FileSystem'
 
-let fileList = ref([])
-
 let buffer = ref('')
 let currentFile = ref('')
-
-EventsOn("open-directory", (files) => {
-  fileList.value = files
-})
 
 function handleChange(filename) {
   currentFile.value = filename
@@ -35,9 +29,12 @@ EventsOn("save-file", saveFile)
 </script>
 
 <template>
-  <div class="window">
-    <FileExplorer :files="fileList" @changeFile="handleChange"/>
-    <Editor :buffer="buffer" @updateBuffer="handleInput"/>
+  <div id="outer-container">
+    <h3 id="file-header">{{ currentFile }}</h3>
+    <div class="window">
+      <FileExplorer @changeFile="handleChange"/>
+      <Editor :buffer="buffer" @updateBuffer="handleInput"/>
+    </div>
   </div>
 </template>
 
@@ -46,5 +43,11 @@ EventsOn("save-file", saveFile)
   display: flex;
   flex-direction: row;
   height: 100%;
+}
+
+#file-header {
+  margin: 0;
+  padding: 5px 0;
+  border-bottom: 1px black solid;
 }
 </style>

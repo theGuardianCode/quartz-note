@@ -3,4 +3,6 @@
 
 export function OpenFile(arg1:string):Promise<string>;
 
+export function ReadDir(arg1:string):Promise<Array<Record<string, string>>>;
+
 export function SaveFile(arg1:string,arg2:string):Promise<void>;
