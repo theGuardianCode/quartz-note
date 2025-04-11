@@ -30,7 +30,7 @@ EventsOn("save-file", saveFile)
 
 <template>
   <div id="outer-container">
-    <h3 id="file-header">{{ currentFile }}</h3>
+    <h3 id="file-header">{{ currentFile ? currentFile : 'No File Selected'}}</h3>
     <div class="window">
       <FileExplorer @changeFile="handleChange"/>
       <Editor :buffer="buffer" @updateBuffer="handleInput"/>
@@ -49,5 +49,13 @@ EventsOn("save-file", saveFile)
   margin: 0;
   padding: 5px 0;
   border-bottom: 1px black solid;
+}
+
+#outer-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
 }
 </style>

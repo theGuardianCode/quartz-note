@@ -46,23 +46,29 @@ function handleFolder(folder) {
 </script>
 
 <template>
-  <ul>
-    <li v-for="elem in fileList">
-      <FileElement :entry="elem" :fileClick="handleClick" :folderClick="handleFolder" />
-    </li>
-  </ul>
+  <div id="list">
+    <ul v-if="fileList.length > 0">
+      <li v-for="elem in fileList">
+        <FileElement :entry="elem" :fileClick="handleClick" :folderClick="handleFolder" />
+      </li>
+    </ul>
+    <p v-else>No Folder Selected</p>
+  </div>
 </template>
 
 <style scoped>
-ul {
+#list {
   text-align: left;
   width: 20%;
-  height: 100%;
-  position: fixed;
-  padding: 0 1% 0 1%;
+  padding: 0 1%;
   overflow: scroll;
   border-right: 1px solid black;
   margin: 0;
+}
+
+ul {
+  padding: 0;
+  word-break: break-word;
 }
 
 li {

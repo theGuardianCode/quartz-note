@@ -8,7 +8,7 @@ const props = defineProps({
 
 <template>
   <div v-if="entry.isDir === 'true'">
-    <p @click="() => folderClick(entry.name)">> {{ entry.name }}</p>
+    <p @click="() => folderClick(entry.name)">{{ entry.expanded ? 'v' : '>' }} {{ entry.name }}</p>
     <ul v-if="entry.children.length > 0 && entry.expanded">
       <li v-for="elem in entry.children">
         <FileElement :entry="elem" :fileClick="fileClick" :folderClick="folderClick"/>

@@ -1,27 +1,41 @@
 <script setup>
-import { marked } from 'marked'
+import { Marked } from 'marked'
+import { markedHighlight }  from 'marked-highlight'
+import hljs from 'highlight.js'
 import { EventsOn } from '../../wailsjs/runtime/runtime'
 import { ref, watch } from 'vue'
+
+// Markdown parser config
+const marked = new Marked(
+  markedHighlight({
+    emptyLangClass: 'hljs',
+    langPrefix: 'hljs language-',
+    highlight(code, lang, info) {
+      const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+      const result = hljs.highlight(code, { language }).value;
+      console.log(result)
+      return result
+    }
+  })
+)
 
 marked.use({
   gfm: true,
   breaks: true,
 })
 
+// Props and emits
 const props = defineProps({
   buffer: String
 })
 const emit = defineEmits(['updateBuffer'])
 
+// State and Handlers
 let editing = ref(false)
 let htmlContents = ref('')
 
 function toggle() {
   editing.value = !editing.value
-
-  // if (!editing.value) {
-  //   renderHtml(props.buffer)
-  // }
 }
 
 function handleInput(e) {
@@ -29,6 +43,7 @@ function handleInput(e) {
 }
 
 function renderHtml(html) {
+  console.log(`html: ${html}`)
   htmlContents.value = marked.parse(html)
 }
 
@@ -42,10 +57,8 @@ EventsOn("toggle-edit", toggle)
 
 <template>
   <div class="container">
-    <div class="pane">
-      <textarea v-if="editing" @input="handleInput">{{ buffer }}</textarea>
-      <p v-else v-html="htmlContents"></p>
-    </div>
+    <textarea v-if="editing" @input="handleInput">{{ buffer }}</textarea>
+    <p v-else v-html="htmlContents"></p>
   </div>
 </template>
 
@@ -65,14 +78,14 @@ textarea {
   width: 80%;
   padding: 5px;
   text-align: left;
-  margin-left: 22%;
+  overflow: scroll;
 }
 
 .pane {
-  height: 100%;
+  height: 97vh;
 }
 
-.pane p {
+p {
   overflow-wrap: break-word;
 }
 </style>
