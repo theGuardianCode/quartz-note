@@ -15,9 +15,11 @@ const fileList = ref([])
 // Occasionally re-render files
 onMounted(() => {
   setInterval(() => {
-    ReadDir(props.workingDir, false).then((contents) => {
-      openDirectory(props.workingDir, contents)
-    })
+    if (props.workingDir != '') {
+      ReadDir(props.workingDir, false).then((contents) => {
+        openDirectory(props.workingDir, contents)
+      })
+    }
   }, 500)
 })
 
