@@ -8,7 +8,6 @@ import (
 	"strconv"
 
 	"github.com/wailsapp/wails/v2"
-	"github.com/wailsapp/wails/v2/pkg/logger"
 	"github.com/wailsapp/wails/v2/pkg/menu"
 	"github.com/wailsapp/wails/v2/pkg/menu/keys"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -23,8 +22,6 @@ func main() {
 	// Create an instance of the app structure
 	fs := &FileSystem{}
 	app := NewApp(fs)
-
-	runtime.LogSetLogLevel(app.ctx, logger.DEBUG)
 
 	AppMenu := menu.NewMenu()
 	if gr.GOOS == "darwin" {

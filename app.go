@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 
+	"github.com/wailsapp/wails/v2/pkg/logger"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -27,6 +28,8 @@ func (a *App) startup(ctx context.Context) {
 		contents := optionalData[1].(string)
 		a.fileSystem.SaveFile(filename, contents)
 	})
+
+	runtime.LogSetLogLevel(a.ctx, logger.DEBUG)
 }
 
 // Greet returns a greeting for the given name
