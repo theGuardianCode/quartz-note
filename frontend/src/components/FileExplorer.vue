@@ -1,22 +1,38 @@
 <script setup>
 import { EventsOn } from '../../wailsjs/runtime/runtime'
 import { ReadDir } from '../../wailsjs/go/main/FileSystem'
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 
 import FileElement from './FileElement.vue'
 
-const emit = defineEmits(['changeFile'])
+const props = defineProps({
+  workingDir: String
+})
+const emit = defineEmits(['changeFile', 'setDir'])
 
 const fileList = ref([])
 
-EventsOn("open-directory", (files) => {
+// Occasionally re-render files
+onMounted(() => {
+  setInterval(() => {
+    ReadDir(props.workingDir, false).then((contents) => {
+      openDirectory(props.workingDir, contents)
+    })
+  }, 500)
+})
+
+EventsOn("open-directory", openDirectory)
+
+function openDirectory(directory, files) {
+  emit('setDir', directory)
+
   // Reset file list
   fileList.value = []
 
   for (let i = 0; i < files.length; i++) {
     fileList.value.push({name: files[i].name, isDir: files[i].isDir, children: [], expanded: false})
   }
-})
+}
 
 function handleClick(filename) {
   emit('changeFile', filename)
@@ -31,7 +47,7 @@ function handleFolder(folder) {
   }
 
   if (fileList.value[parentDir].expanded === false) {
-    ReadDir(folder).then((contents) => {
+    ReadDir(folder, true).then((contents) => {
       fileList.value[parentDir].children = []
       
       // Insert folder contents into parent dir's children element

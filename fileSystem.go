@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"strconv"
 )
@@ -19,8 +20,24 @@ func (fs *FileSystem) OpenFile(filePath string) string {
 	return string(contents)
 }
 
-func (fs *FileSystem) ReadDir(dir string) []map[string]string {
-	fullPath := fs.workingDir + "/" + dir
+func (fs *FileSystem) CreateFile(filename string) bool {
+	fullPath := fs.workingDir + "/" + filename
+	_, err := os.Create(fullPath)
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(filename)
+	return err != nil
+}
+
+func (fs *FileSystem) ReadDir(dir string, infer bool) []map[string]string {
+	fullPath := dir
+
+	if infer {
+		fullPath = fs.workingDir + "/" + dir
+	}
 
 	files, err := os.ReadDir(fullPath)
 	if err != nil {

@@ -3,10 +3,14 @@ import { ref } from 'vue'
 import { EventsOn, EventsEmit } from '../wailsjs/runtime/runtime'
 import Editor from './components/Editor.vue'
 import FileExplorer from './components/FileExplorer.vue'
-import { OpenFile } from '../wailsjs/go/main/FileSystem'
+import { OpenFile, CreateFile } from '../wailsjs/go/main/FileSystem'
 
-let buffer = ref('')
-let currentFile = ref('')
+const buffer = ref('')
+const currentFile = ref('')
+const dirName = ref('')
+
+const showModal = ref(false)
+const modalInput = ref('')
 
 function handleChange(filename) {
   currentFile.value = filename
@@ -26,13 +30,41 @@ function saveFile() {
 
 // Wails event handler for saving file
 EventsOn("save-file", saveFile)
+
+// Wails event handler for creating file
+EventsOn("prompt-filename", () => {
+  if (dirName.value != '') {
+    showModal.value = true
+  }
+})
+
+// Modal button create file
+function modalButton() {
+  const created = CreateFile(modalInput.value)
+  if (created) {
+    showModal.value = false
+    modalInput.value = ""
+  }
+}
+
+function closeModal() {
+  showModal.value = false
+  modalInput.value = ""
+}
 </script>
 
 <template>
+  <div v-if="showModal" id="modal-background">
+    <div id="modal-content">
+      <span id="modal-header">Create new note:</span> <span @click="closeModal" id="close-modal">X</span>
+      <hr>
+      <input v-model="modalInput"/> <button @click="modalButton">Create</button>
+    </div>
+  </div>
   <div id="outer-container">
     <h3 id="file-header">{{ currentFile ? currentFile : 'No File Selected'}}</h3>
     <div class="window">
-      <FileExplorer @changeFile="handleChange"/>
+      <FileExplorer :workingDir="dirName" @changeFile="handleChange" @setDir="(directory) => dirName = directory"/>
       <Editor :buffer="buffer" @updateBuffer="handleInput"/>
     </div>
   </div>
@@ -57,5 +89,35 @@ EventsOn("save-file", saveFile)
   height: 100vh;
   width: 100vw;
   position: fixed;
+}
+
+#modal-background {
+  z-index: 1;
+  top: 0;
+  left: 0;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+#modal-content {
+  background-color: white;
+  margin: 15% auto;
+  padding: 20px;
+  width: 60%;
+  border-radius: 15px;
+  text-align: left;
+}
+
+#modal-header {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 0;
+}
+
+#close-modal {
+  cursor: pointer;
+  float: right;
 }
 </style>

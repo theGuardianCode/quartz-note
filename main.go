@@ -2,11 +2,13 @@ package main
 
 import (
 	"embed"
+	"fmt"
 	"os"
 	gr "runtime"
 	"strconv"
 
 	"github.com/wailsapp/wails/v2"
+	"github.com/wailsapp/wails/v2/pkg/logger"
 	"github.com/wailsapp/wails/v2/pkg/menu"
 	"github.com/wailsapp/wails/v2/pkg/menu/keys"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -22,12 +24,21 @@ func main() {
 	fs := &FileSystem{}
 	app := NewApp(fs)
 
+	runtime.LogSetLogLevel(app.ctx, logger.DEBUG)
+
 	AppMenu := menu.NewMenu()
 	if gr.GOOS == "darwin" {
 		AppMenu.Append(menu.AppMenu())
 	}
 
 	FileMenu := AppMenu.AddSubmenu("File")
+
+	FileMenu.AddText("New Note", keys.CmdOrCtrl("n"), func(_ *menu.CallbackData) {
+		// Tell frontend to ask for filename
+		runtime.EventsEmit(app.ctx, "prompt-filename")
+	})
+
+	// Open folder menu item
 	FileMenu.AddText("Open Folder", keys.CmdOrCtrl("o"), func(_ *menu.CallbackData) {
 		directory, err := runtime.OpenDirectoryDialog(app.ctx, runtime.OpenDialogOptions{})
 		if err != nil {
@@ -47,14 +58,18 @@ func main() {
 			fileMap = append(fileMap, entry)
 		}
 
+		fmt.Println(fileMap)
 		app.fileSystem.workingDir = directory
-		runtime.EventsEmit(app.ctx, "open-directory", fileMap)
+		runtime.EventsEmit(app.ctx, "open-directory", directory, fileMap)
 	})
+
+	// Save file menu item
 	FileMenu.AddText("Save", keys.CmdOrCtrl("s"), func(_ *menu.CallbackData) {
 		runtime.EventsEmit(app.ctx, "save-file")
 	})
 
 	EditMenu := AppMenu.AddSubmenu("Edit")
+	// Toggle view menu item
 	EditMenu.AddText("Toggle", keys.CmdOrCtrl("t"), func(_ *menu.CallbackData) {
 		runtime.EventsEmit(app.ctx, "toggle-edit")
 	})
