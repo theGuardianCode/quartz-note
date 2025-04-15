@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"strconv"
 )
@@ -28,7 +27,6 @@ func (fs *FileSystem) CreateFile(filename string) bool {
 		panic(err)
 	}
 
-	fmt.Println(filename)
 	return err != nil
 }
 

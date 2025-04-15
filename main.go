@@ -2,7 +2,6 @@ package main
 
 import (
 	"embed"
-	"fmt"
 	"os"
 	gr "runtime"
 	"strconv"
@@ -55,7 +54,6 @@ func main() {
 			fileMap = append(fileMap, entry)
 		}
 
-		fmt.Println(fileMap)
 		app.fileSystem.workingDir = directory
 		runtime.EventsEmit(app.ctx, "open-directory", directory, fileMap)
 	})
@@ -69,6 +67,10 @@ func main() {
 	// Toggle view menu item
 	EditMenu.AddText("Toggle", keys.CmdOrCtrl("t"), func(_ *menu.CallbackData) {
 		runtime.EventsEmit(app.ctx, "toggle-edit")
+	})
+	// Navigate back menu item
+	EditMenu.AddText("Navigate Back", keys.CmdOrCtrl("backspace"), func(cd *menu.CallbackData) {
+		runtime.EventsEmit(app.ctx, "navigate-back")
 	})
 
 	if gr.GOOS == "darwin" {

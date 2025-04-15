@@ -1,7 +1,7 @@
 <script setup>
 import { EventsOn } from '../../wailsjs/runtime/runtime'
 import { ReadDir } from '../../wailsjs/go/main/FileSystem'
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref } from 'vue'
 
 import FileElement from './FileElement.vue'
 
@@ -12,18 +12,29 @@ const emit = defineEmits(['changeFile', 'setDir'])
 
 const fileList = ref([])
 
-// Occasionally re-render files
-onMounted(() => {
-  setInterval(() => {
-    if (props.workingDir != '') {
-      ReadDir(props.workingDir, false).then((contents) => {
-        openDirectory(props.workingDir, contents)
-      })
-    }
-  }, 500)
+// Stack history of previous files
+const history = ref([])
+
+// Re-render files on event
+EventsOn("reload-files", () => {
+  if (props.workingDir != '') {
+    ReadDir(props.workingDir, false).then((contents) => {
+      openDirectory(props.workingDir, contents)
+    })
+  }
 })
 
 EventsOn("open-directory", openDirectory)
+
+// When user presses ctrl+backspace. Navigates to previous file.
+EventsOn("navigate-back", () => {
+  let prevFile = history.value.pop()
+  prevFile = history.value.pop()
+  
+  if (prevFile !== undefined) {
+    handleFile(prevFile)
+  }
+})
 
 function openDirectory(directory, files) {
   emit('setDir', directory)
@@ -36,8 +47,12 @@ function openDirectory(directory, files) {
   }
 }
 
-function handleClick(filename) {
+function handleFile(filename) {
   emit('changeFile', filename)
+
+  if (filename !== history.value[history.value.length - 1]) {
+    history.value.push(filename)
+  }
 }
 
 function handleFolder(folder) {
@@ -67,7 +82,7 @@ function handleFolder(folder) {
   <div id="list">
     <ul v-if="fileList.length > 0">
       <li v-for="elem in fileList">
-        <FileElement :entry="elem" :fileClick="handleClick" :folderClick="handleFolder" />
+        <FileElement :entry="elem" :fileClick="handleFile" :folderClick="handleFolder" />
       </li>
     </ul>
     <p v-else>No Folder Selected</p>

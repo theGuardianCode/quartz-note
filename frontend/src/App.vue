@@ -12,6 +12,9 @@ const dirName = ref('')
 const showModal = ref(false)
 const modalInput = ref('')
 
+// Indicate whether the file is saved
+const saved = ref(true)
+
 function handleChange(filename) {
   currentFile.value = filename
   OpenFile(filename).then((data) => {
@@ -21,11 +24,13 @@ function handleChange(filename) {
 
 function handleInput(updatedBuffer) {
   buffer.value = updatedBuffer
+  saved.value = false
 }
 
 function saveFile() {
   // Tell wails to write to file
   EventsEmit("writeFile", currentFile.value, buffer.value)
+  saved.value = true
 }
 
 // Wails event handler for saving file
@@ -44,6 +49,7 @@ function modalButton() {
   if (created) {
     showModal.value = false
     modalInput.value = ""
+    EventsEmit("reload-files")
   }
 }
 
@@ -62,7 +68,7 @@ function closeModal() {
     </div>
   </div>
   <div id="outer-container">
-    <h3 id="file-header">{{ currentFile ? currentFile : 'No File Selected'}}</h3>
+    <h3 id="file-header">{{ currentFile ? currentFile : 'No File Selected'}} {{ !saved ? '*' : '' }}</h3>
     <div class="window">
       <FileExplorer :workingDir="dirName" @changeFile="handleChange" @setDir="(directory) => dirName = directory"/>
       <Editor :buffer="buffer" @updateBuffer="handleInput"/>

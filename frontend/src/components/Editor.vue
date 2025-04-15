@@ -13,7 +13,7 @@ const marked = new Marked(
     highlight(code, lang, info) {
       const language = hljs.getLanguage(lang) ? lang : 'plaintext';
       const result = hljs.highlight(code, { language }).value;
-      console.log(result)
+
       return result
     }
   })
