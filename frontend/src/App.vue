@@ -12,6 +12,8 @@ const dirName = ref('')
 const showModal = ref(false)
 const modalInput = ref('')
 
+const leftBar = ref(false)
+
 // Indicate whether the file is saved
 const saved = ref(true)
 
@@ -43,6 +45,11 @@ EventsOn("prompt-filename", () => {
   }
 })
 
+// Wails event handler for toggling file explorer
+EventsOn("toggle-explorer", () => {
+  leftBar.value = !leftBar.value
+})
+
 // Modal button create file
 function modalButton() {
   const created = CreateFile(modalInput.value)
@@ -70,7 +77,7 @@ function closeModal() {
   <div id="outer-container">
     <h3 id="file-header">{{ currentFile ? currentFile : 'No File Selected'}} {{ !saved ? '*' : '' }}</h3>
     <div class="window">
-      <FileExplorer :workingDir="dirName" @changeFile="handleChange" @setDir="(directory) => dirName = directory"/>
+      <FileExplorer v-if="leftBar" :workingDir="dirName" @changeFile="handleChange" @setDir="(directory) => dirName = directory"/>
       <Editor :buffer="buffer" @updateBuffer="handleInput"/>
     </div>
   </div>

@@ -1,7 +1,7 @@
 <script setup>
 import { EventsOn } from '../../wailsjs/runtime/runtime'
 import { ReadDir } from '../../wailsjs/go/main/FileSystem'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 import FileElement from './FileElement.vue'
 
@@ -15,13 +15,13 @@ const fileList = ref([])
 // Stack history of previous files
 const history = ref([])
 
+onMounted(() => {
+  readWorkingDir()
+})
+
 // Re-render files on event
 EventsOn("reload-files", () => {
-  if (props.workingDir != '') {
-    ReadDir(props.workingDir, false).then((contents) => {
-      openDirectory(props.workingDir, contents)
-    })
-  }
+  readWorkingDir()
 })
 
 EventsOn("open-directory", openDirectory)
@@ -35,6 +35,14 @@ EventsOn("navigate-back", () => {
     handleFile(prevFile)
   }
 })
+
+function readWorkingDir() {
+  if (props.workingDir != '') {
+    ReadDir(props.workingDir, false).then((contents) => {
+      openDirectory(props.workingDir, contents)
+    })
+  }
+}
 
 function openDirectory(directory, files) {
   emit('setDir', directory)
@@ -92,7 +100,7 @@ function handleFolder(folder) {
 <style scoped>
 #list {
   text-align: left;
-  width: 20%;
+  width: 25%;
   padding: 0 1%;
   overflow: scroll;
   border-right: 1px solid black;

@@ -75,7 +75,7 @@ textarea {
 .container {
   display: flex;
   flex-direction: column;
-  width: 80%;
+  width: 100%;
   padding: 5px;
   text-align: left;
   overflow: scroll;

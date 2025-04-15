@@ -73,6 +73,11 @@ func main() {
 		runtime.EventsEmit(app.ctx, "navigate-back")
 	})
 
+	ViewMenu := AppMenu.AddSubmenu("View")
+	ViewMenu.AddText("Toggle Explorer", keys.CmdOrCtrl("h"), func(cd *menu.CallbackData) {
+		runtime.EventsEmit(app.ctx, "toggle-explorer")
+	})
+
 	if gr.GOOS == "darwin" {
 		AppMenu.Append(menu.EditMenu())
 	}
