@@ -50,6 +50,11 @@ EventsOn("toggle-explorer", () => {
   leftBar.value = !leftBar.value
 })
 
+// Wails event handler for setting working directory
+EventsOn("open-directory", (directory, _) => {
+  dirName.value = directory
+})
+
 // Modal button create file
 function modalButton() {
   const created = CreateFile(modalInput.value)
@@ -77,7 +82,11 @@ function closeModal() {
   <div id="outer-container">
     <h3 id="file-header">{{ currentFile ? currentFile : 'No File Selected'}} {{ !saved ? '*' : '' }}</h3>
     <div class="window">
-      <FileExplorer v-if="leftBar" :workingDir="dirName" @changeFile="handleChange" @setDir="(directory) => dirName = directory"/>
+      <FileExplorer 
+        v-if="leftBar" 
+        :workingDir="dirName"
+        :saveFunc="saveFile" 
+        @changeFile="handleChange"/>
       <Editor :buffer="buffer" @updateBuffer="handleInput"/>
     </div>
   </div>

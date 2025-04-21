@@ -9,6 +9,10 @@ type FileSystem struct {
 	workingDir string
 }
 
+func (fs *FileSystem) GetWorkinDir() string {
+	return fs.workingDir
+}
+
 func (fs *FileSystem) OpenFile(filePath string) string {
 	fullPath := fs.workingDir + "/" + filePath
 	contents, err := os.ReadFile(fullPath)

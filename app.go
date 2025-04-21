@@ -26,7 +26,10 @@ func (a *App) startup(ctx context.Context) {
 	runtime.EventsOn(a.ctx, "writeFile", func(optionalData ...interface{}) {
 		filename := optionalData[0].(string)
 		contents := optionalData[1].(string)
-		a.fileSystem.SaveFile(filename, contents)
+
+		if filename != "" {
+			a.fileSystem.SaveFile(filename, contents)
+		}
 	})
 
 	runtime.LogSetLogLevel(a.ctx, logger.DEBUG)

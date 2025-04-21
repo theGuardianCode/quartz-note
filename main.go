@@ -37,25 +37,23 @@ func main() {
 	// Open folder menu item
 	FileMenu.AddText("Open Folder", keys.CmdOrCtrl("o"), func(_ *menu.CallbackData) {
 		directory, err := runtime.OpenDirectoryDialog(app.ctx, runtime.OpenDialogOptions{})
-		if err != nil {
-			panic(err)
-		}
+		if err == nil {
+			files, err := os.ReadDir(directory)
+			if err != nil {
+				panic(err)
+			}
 
-		files, err := os.ReadDir(directory)
-		if err != nil {
-			panic(err)
-		}
+			var fileMap []map[string]string
+			for _, file := range files {
+				entry := make(map[string]string)
+				entry["name"] = file.Name()
+				entry["isDir"] = strconv.FormatBool(file.Type().IsDir())
+				fileMap = append(fileMap, entry)
+			}
 
-		var fileMap []map[string]string
-		for _, file := range files {
-			entry := make(map[string]string)
-			entry["name"] = file.Name()
-			entry["isDir"] = strconv.FormatBool(file.Type().IsDir())
-			fileMap = append(fileMap, entry)
+			app.fileSystem.workingDir = directory
+			runtime.EventsEmit(app.ctx, "open-directory", directory, fileMap)
 		}
-
-		app.fileSystem.workingDir = directory
-		runtime.EventsEmit(app.ctx, "open-directory", directory, fileMap)
 	})
 
 	// Save file menu item

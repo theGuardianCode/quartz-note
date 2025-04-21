@@ -6,7 +6,8 @@ import { onMounted, ref } from 'vue'
 import FileElement from './FileElement.vue'
 
 const props = defineProps({
-  workingDir: String
+  workingDir: String,
+  saveFunc: Function
 })
 const emit = defineEmits(['changeFile', 'setDir'])
 
@@ -45,8 +46,6 @@ function readWorkingDir() {
 }
 
 function openDirectory(directory, files) {
-  emit('setDir', directory)
-
   // Reset file list
   fileList.value = []
 
@@ -56,6 +55,9 @@ function openDirectory(directory, files) {
 }
 
 function handleFile(filename) {
+  // Save file on change
+  props.saveFunc()
+
   emit('changeFile', filename)
 
   if (filename !== history.value[history.value.length - 1]) {

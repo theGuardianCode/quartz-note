@@ -6,6 +6,10 @@ export function CreateFile(arg1) {
   return window['go']['main']['FileSystem']['CreateFile'](arg1);
 }
 
+export function GetWorkinDir() {
+  return window['go']['main']['FileSystem']['GetWorkinDir']();
+}
+
 export function OpenFile(arg1) {
   return window['go']['main']['FileSystem']['OpenFile'](arg1);
 }
