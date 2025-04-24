@@ -61,24 +61,24 @@ func main() {
 		runtime.EventsEmit(app.ctx, "save-file")
 	})
 
-	EditMenu := AppMenu.AddSubmenu("Edit")
-	// Toggle view menu item
-	EditMenu.AddText("Toggle", keys.CmdOrCtrl("t"), func(_ *menu.CallbackData) {
-		runtime.EventsEmit(app.ctx, "toggle-edit")
-	})
-	// Navigate back menu item
-	EditMenu.AddText("Navigate Back", keys.CmdOrCtrl("backspace"), func(cd *menu.CallbackData) {
-		runtime.EventsEmit(app.ctx, "navigate-back")
-	})
+	if gr.GOOS == "darwin" {
+		AppMenu.Append(menu.EditMenu())
+	}
 
 	ViewMenu := AppMenu.AddSubmenu("View")
 	ViewMenu.AddText("Toggle Explorer", keys.CmdOrCtrl("h"), func(cd *menu.CallbackData) {
 		runtime.EventsEmit(app.ctx, "toggle-explorer")
 	})
 
-	if gr.GOOS == "darwin" {
-		AppMenu.Append(menu.EditMenu())
-	}
+	// Toggle view menu item
+	ViewMenu.AddText("Toggle", keys.CmdOrCtrl("t"), func(_ *menu.CallbackData) {
+		runtime.EventsEmit(app.ctx, "toggle-edit")
+	})
+	// Navigate back menu item
+	ViewMenu.AddText("Navigate Back", keys.CmdOrCtrl("backspace"), func(cd *menu.CallbackData) {
+		runtime.EventsEmit(app.ctx, "navigate-back")
+	})
+
 	// Create application with options
 	err := wails.Run(&options.App{
 		Title:  "Quartz Note",

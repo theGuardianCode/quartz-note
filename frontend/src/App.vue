@@ -12,7 +12,7 @@ const dirName = ref('')
 const showModal = ref(false)
 const modalInput = ref('')
 
-const leftBar = ref(false)
+const leftBar = ref(true)
 
 // Indicate whether the file is saved
 const saved = ref(true)
