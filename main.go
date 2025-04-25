@@ -39,20 +39,18 @@ func main() {
 		directory, err := runtime.OpenDirectoryDialog(app.ctx, runtime.OpenDialogOptions{})
 		if err == nil {
 			files, err := os.ReadDir(directory)
-			if err != nil {
-				panic(err)
-			}
+			if err == nil {
+				var fileMap []map[string]string
+				for _, file := range files {
+					entry := make(map[string]string)
+					entry["name"] = file.Name()
+					entry["isDir"] = strconv.FormatBool(file.Type().IsDir())
+					fileMap = append(fileMap, entry)
+				}
 
-			var fileMap []map[string]string
-			for _, file := range files {
-				entry := make(map[string]string)
-				entry["name"] = file.Name()
-				entry["isDir"] = strconv.FormatBool(file.Type().IsDir())
-				fileMap = append(fileMap, entry)
+				app.fileSystem.workingDir = directory
+				runtime.EventsEmit(app.ctx, "open-directory", directory, fileMap)
 			}
-
-			app.fileSystem.workingDir = directory
-			runtime.EventsEmit(app.ctx, "open-directory", directory, fileMap)
 		}
 	})
 
@@ -89,6 +87,7 @@ func main() {
 		},
 		BackgroundColour: &options.RGBA{R: 255, G: 255, B: 255, A: 1},
 		OnDomReady:       app.startup,
+		OnShutdown:       app.shutdown,
 		Menu:             AppMenu,
 		Bind: []interface{}{
 			app,

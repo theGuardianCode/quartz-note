@@ -9,7 +9,7 @@ type FileSystem struct {
 	workingDir string
 }
 
-func (fs *FileSystem) GetWorkinDir() string {
+func (fs *FileSystem) GetWorkingDir() string {
 	return fs.workingDir
 }
 

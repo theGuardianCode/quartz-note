@@ -3,7 +3,7 @@
 
 export function CreateFile(arg1:string):Promise<boolean>;
 
-export function GetWorkinDir():Promise<string>;
+export function GetWorkingDir():Promise<string>;
 
 export function OpenFile(arg1:string):Promise<string>;
 

@@ -2,6 +2,9 @@ package main
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
+	"os"
 
 	"github.com/wailsapp/wails/v2/pkg/logger"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -11,6 +14,7 @@ import (
 type App struct {
 	ctx        context.Context
 	fileSystem *FileSystem
+	settings   Settings
 }
 
 // NewApp creates a new App application struct
@@ -33,9 +37,34 @@ func (a *App) startup(ctx context.Context) {
 	})
 
 	runtime.LogSetLogLevel(a.ctx, logger.DEBUG)
+
+	// Load user cache
+	cacheDir, _ := os.UserCacheDir()
+	datFile := cacheDir + "/quartz-note.json"
+	contents, err := os.ReadFile(datFile)
+
+	if err != nil {
+		// Load default data
+		a.settings = Settings{DefaultDir: ""}
+	} else {
+		var dat Settings
+		json.Unmarshal(contents, &dat)
+
+		a.settings = dat
+	}
+
+	a.fileSystem.workingDir = a.settings.DefaultDir
+	fmt.Println(a.fileSystem.workingDir)
 }
 
-// Greet returns a greeting for the given name
-// func (a *App) Greet(name string) string {
-// 	return fmt.Sprintf("Hello %s, It's show time!", name)
-// }a
+func (a *App) shutdown(ctx context.Context) {
+	// TODO: save current dir
+	a.settings.DefaultDir = a.fileSystem.workingDir
+
+	cacheDir, _ := os.UserCacheDir()
+	datFile := cacheDir + "/quartz-note.json"
+
+	cache, _ := json.Marshal(a.settings)
+	fmt.Println(string(cache))
+	os.WriteFile(datFile, cache, 0644)
+}

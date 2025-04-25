@@ -6,7 +6,7 @@ import { onMounted, ref } from 'vue'
 import FileElement from './FileElement.vue'
 
 const props = defineProps({
-  workingDir: String,
+  workingDir: Function,
   saveFunc: Function
 })
 const emit = defineEmits(['changeFile', 'setDir'])
@@ -21,9 +21,7 @@ onMounted(() => {
 })
 
 // Re-render files on event
-EventsOn("reload-files", () => {
-  readWorkingDir()
-})
+EventsOn("reload-files", readWorkingDir)
 
 EventsOn("open-directory", openDirectory)
 
@@ -38,9 +36,11 @@ EventsOn("navigate-back", () => {
 })
 
 function readWorkingDir() {
-  if (props.workingDir != '') {
-    ReadDir(props.workingDir, false).then((contents) => {
-      openDirectory(props.workingDir, contents)
+  console.log(`reloading files in dir ${props.workingDir()}`)
+  if (props.workingDir() != '') {
+    ReadDir(props.workingDir(), false).then((contents) => {
+      openDirectory(props.workingDir(), contents)
+      console.log(fileList.value)
     })
   }
 }
@@ -90,6 +90,7 @@ function handleFolder(folder) {
 
 <template>
   <div id="list">
+    <h4>{{ workingDir() }}</h4>
     <ul v-if="fileList.length > 0">
       <li v-for="elem in fileList">
         <FileElement :entry="elem" :fileClick="handleFile" :folderClick="handleFolder" />

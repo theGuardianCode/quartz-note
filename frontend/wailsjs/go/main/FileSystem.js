@@ -6,8 +6,8 @@ export function CreateFile(arg1) {
   return window['go']['main']['FileSystem']['CreateFile'](arg1);
 }
 
-export function GetWorkinDir() {
-  return window['go']['main']['FileSystem']['GetWorkinDir']();
+export function GetWorkingDir() {
+  return window['go']['main']['FileSystem']['GetWorkingDir']();
 }
 
 export function OpenFile(arg1) {

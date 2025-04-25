@@ -1,9 +1,9 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { EventsOn, EventsEmit } from '../wailsjs/runtime/runtime'
 import Editor from './components/Editor.vue'
 import FileExplorer from './components/FileExplorer.vue'
-import { OpenFile, CreateFile } from '../wailsjs/go/main/FileSystem'
+import { OpenFile, CreateFile, ReadDir, GetWorkingDir } from '../wailsjs/go/main/FileSystem'
 
 const buffer = ref('')
 const currentFile = ref('')
@@ -16,6 +16,16 @@ const leftBar = ref(true)
 
 // Indicate whether the file is saved
 const saved = ref(true)
+
+onMounted(async () => {
+  const workingDir = await GetWorkingDir()
+  dirName.value = workingDir
+})
+
+watch(dirName, () => {
+  console.log(dirName)
+  EventsEmit("reload-files")
+})
 
 function handleChange(filename) {
   currentFile.value = filename
@@ -84,7 +94,7 @@ function closeModal() {
     <div class="window">
       <FileExplorer 
         v-if="leftBar" 
-        :workingDir="dirName"
+        :workingDir="() => dirName"
         :saveFunc="saveFile" 
         @changeFile="handleChange"/>
       <Editor :buffer="buffer" @updateBuffer="handleInput"/>
