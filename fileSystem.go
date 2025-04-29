@@ -1,8 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"os"
+	gr "runtime"
 	"strconv"
+	"strings"
 )
 
 type FileSystem struct {
@@ -66,4 +69,17 @@ func (fs *FileSystem) SaveFile(filePath string, contents string) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func (fs *FileSystem) GetRelativePath(filePath string) string {
+	fmt.Println("Getting relative filepath of: " + filePath)
+	separator := "/"
+
+	if gr.GOOS == "windows" {
+		separator = "\\"
+	}
+
+	heirarchy := strings.Split(filePath, separator)
+
+	return heirarchy[len(heirarchy)-1]
 }

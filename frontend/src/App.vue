@@ -23,7 +23,6 @@ onMounted(async () => {
 })
 
 watch(dirName, () => {
-  console.log(dirName)
   EventsEmit("reload-files")
 })
 

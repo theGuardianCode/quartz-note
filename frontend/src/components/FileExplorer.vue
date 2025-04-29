@@ -1,6 +1,6 @@
 <script setup>
 import { EventsOn } from '../../wailsjs/runtime/runtime'
-import { ReadDir } from '../../wailsjs/go/main/FileSystem'
+import { ReadDir, GetRelativePath } from '../../wailsjs/go/main/FileSystem'
 import { onMounted, ref } from 'vue'
 
 import FileElement from './FileElement.vue'
@@ -13,10 +13,12 @@ const emit = defineEmits(['changeFile', 'setDir'])
 
 const fileList = ref([])
 
+const workingDirAlias = ref('')
+
 // Stack history of previous files
 const history = ref([])
 
-onMounted(() => {
+onMounted(async () => {
   readWorkingDir()
 })
 
@@ -36,11 +38,13 @@ EventsOn("navigate-back", () => {
 })
 
 function readWorkingDir() {
-  console.log(`reloading files in dir ${props.workingDir()}`)
   if (props.workingDir() != '') {
+    GetRelativePath(props.workingDir()).then(relativePath => {
+      workingDirAlias.value = relativePath
+    })
+
     ReadDir(props.workingDir(), false).then((contents) => {
       openDirectory(props.workingDir(), contents)
-      console.log(fileList.value)
     })
   }
 }
@@ -95,7 +99,7 @@ function handleFolder(folder) {
 
 <template>
   <div id="list">
-    <h4>{{ workingDir().split("/").at(-1) }}</h4>
+    <h4>{{ workingDirAlias }}</h4>
     <ul v-if="fileList.length > 0">
       <li v-for="elem in fileList">
         <FileElement :entry="elem" :fileClick="handleFile" :folderClick="handleFolder" />
