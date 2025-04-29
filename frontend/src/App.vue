@@ -3,7 +3,7 @@ import { ref, onMounted, watch } from 'vue'
 import { EventsOn, EventsEmit } from '../wailsjs/runtime/runtime'
 import Editor from './components/Editor.vue'
 import FileExplorer from './components/FileExplorer.vue'
-import { OpenFile, CreateFile, ReadDir, GetWorkingDir } from '../wailsjs/go/main/FileSystem'
+import { OpenFile, CreateFile, GetWorkingDir } from '../wailsjs/go/main/FileSystem'
 
 const buffer = ref('')
 const currentFile = ref('')

@@ -50,7 +50,7 @@ function openDirectory(directory, files) {
   fileList.value = []
 
   for (let i = 0; i < files.length; i++) {
-    fileList.value.push({name: files[i].name, isDir: files[i].isDir, children: [], expanded: false})
+    fileList.value.push({path: files[i].name, name: files[i].name, isDir: files[i].isDir, children: [], expanded: false})
   }
 }
 
@@ -79,7 +79,12 @@ function handleFolder(folder) {
       
       // Insert folder contents into parent dir's children element
       for (let i = 0; i < contents.length; i++) {
-        fileList.value[parentDir].children.push({name: folder + "/" + contents[i].name, isDir: contents[i].isDir, children: [], expanded: false})
+        fileList.value[parentDir].children.push({
+          name: contents[i].name,
+          path: folder + "/" + contents[i].name,
+          isDir: contents[i].isDir,
+          children: [],
+          expanded: false})
       }
     })
   } 
@@ -90,7 +95,7 @@ function handleFolder(folder) {
 
 <template>
   <div id="list">
-    <h4>{{ workingDir() }}</h4>
+    <h4>{{ workingDir().split("/").at(-1) }}</h4>
     <ul v-if="fileList.length > 0">
       <li v-for="elem in fileList">
         <FileElement :entry="elem" :fileClick="handleFile" :folderClick="handleFolder" />

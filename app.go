@@ -58,13 +58,12 @@ func (a *App) startup(ctx context.Context) {
 }
 
 func (a *App) shutdown(ctx context.Context) {
-	// TODO: save current dir
 	a.settings.DefaultDir = a.fileSystem.workingDir
 
 	cacheDir, _ := os.UserCacheDir()
 	datFile := cacheDir + "/quartz-note.json"
 
-	cache, _ := json.Marshal(a.settings)
+	cache := a.settings.Serialise()
 	fmt.Println(string(cache))
 	os.WriteFile(datFile, cache, 0644)
 }
