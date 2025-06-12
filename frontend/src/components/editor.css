@@ -1,0 +1,9 @@
+#editorjs {
+    margin-left: 60px;
+}
+
+.title-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

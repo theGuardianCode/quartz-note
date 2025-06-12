@@ -9,7 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "preact": "^10.10.1"
+    "@editorjs/editorjs": "^2.30.8",
+    "@editorjs/header": "^2.8.8",
+    "@supabase/supabase-js": "^2.50.0",
+    "preact": "^10.10.1",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.3.0",

@@ -1,0 +1,21 @@
+li {
+    list-style: none;
+    transition: 0.3s;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 10px;
+}
+
+li:hover {
+    background-color: lightgray;
+}
+
+ul {
+    padding: 5px;
+    margin: 0;
+}
+
+.page-list {
+    min-height: 100%;
+    border-right: 2px solid black;
+}
