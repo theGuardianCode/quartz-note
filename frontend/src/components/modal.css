@@ -29,19 +29,34 @@
 }
 
 .modal-content > button {
-    background-color: black;
-    color: white;
+    background-color: var(--accent);
+    color: var(--dark-accent);
     border: none;
     font-size: 14px;
     padding: 10px 15px;
     border-radius: 10px;
     margin-top: 10px;
     cursor: pointer;
+    font-weight: bold;
+}
+
+.modal-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.modal-header > h2 {
+    margin: 0;
 }
 
 .close-btn {
     cursor: pointer;
     border: 1px solid lightgrey;
-    padding: 3px 7px;
+    padding: 5px 7px;
+    font-size: 12px;
     border-radius: 5px;
+    box-shadow: 1px 1px #888888;
 }

@@ -3,6 +3,13 @@ body, html {
     min-height: 100%;
 }
 
+:root {
+    --primary: white;
+    --accent: #88e2b7;
+    --primary-font: black;
+    --dark-accent: #2c5642;
+}
+
 App {
     height: 100%;
 }

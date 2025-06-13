@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'preact/hooks';
 import { Editor } from './components/editor';
-import { PageList } from './components/page_list';
+import { LeftMenu } from './components/left_menu';
 import { supabase } from '../connection';
 import { Modal } from './components/modal';
+import { AccountModal } from './components/account_modal';
 import { v4 as uuidv4 } from 'uuid';
 import './app.css'
 
@@ -10,20 +11,11 @@ export function App(props) {
     const [pages, setPages] = useState([]);
     const [blocks, setBlocks] = useState();
     const [activePage, setActivePage] = useState({});
-    const [showModal, setShowModal] = useState(false);
+
+    const [showCreateModal, setShowCreateModal] = useState(false);
+    const [showAccountModal, setShowAccountModal] = useState(false);
 
     useEffect(async () => {
-        // sign in with password
-        const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-            email: import.meta.env.VITE_TEST_EMAIL,
-            password: import.meta.env.VITE_TEST_PASS
-        })
-        if (authError != null) {
-            console.log(authError);
-        }
-
-        authData.user.id
-
         loadPages();
 
         // Supabase listener to update page list when db changes
@@ -64,6 +56,27 @@ export function App(props) {
         setBlocks(schema);
     }
 
+    async function login(email, password) {
+        const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+        })
+        if (authError != null) {
+            console.log(authError);
+        }
+
+        const { data, error } = await supabase.auth.getUser();
+        if (data.user) {
+            loadPages();
+        }
+    }
+
+    async function logout() {
+        await supabase.auth.signOut();
+        loadPages()
+        setActivePage({})
+    }
+
     async function loadPages() {
         // Get users pages 
         const { data: pageData, error } = await supabase.from('pages').select();
@@ -86,9 +99,10 @@ export function App(props) {
 
     return (
         <div class="container">
-            {showModal ? <Modal message="New note:" buttonText="create" buttonCallback={createNote} toggleModal={setShowModal}/> : null}
-            <PageList pages={pages} changePage={changePage} setShowModal={setShowModal}/>
-            {Object.keys(activePage).length > 0 ? <Editor data={blocks} pageId={activePage.id} pageName={activePage.name}/> : null}
+            {showCreateModal ? <Modal message="New page:" buttonText="create" buttonCallback={createNote} toggleModal={setShowCreateModal}/> : null}
+            {showAccountModal ? <AccountModal message="Log-In" buttonText="Log In" buttonCallback={login} toggleModal={setShowAccountModal}/> : null}
+            <LeftMenu pages={pages} changePage={changePage} showCreateModal={setShowCreateModal} showAccountModal={setShowAccountModal} logout={logout}/>
+            {Object.keys(activePage).length > 0 ? <Editor data={blocks} pageId={activePage.id} pageName={activePage.name}/> : "Select a page"}
         </div>
     )
 }

@@ -1,11 +1,12 @@
 import { useState } from "preact/hooks";
 import './modal.css';
 
-export function Modal({message, buttonText, buttonCallback, toggleModal}) {
-    const [value, setValue] = useState("");
+export function AccountModal({message, buttonText, buttonCallback, toggleModal}) {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
     function handleClick() {
-        buttonCallback(value);
+        buttonCallback(email, password);
         toggleModal(false);
     }
 
@@ -13,7 +14,8 @@ export function Modal({message, buttonText, buttonCallback, toggleModal}) {
         <div class="modal-container">
             <div className="modal-content">
                 <span class="modal-header"><h2>{message}</h2><span class="close-btn" onClick={() => toggleModal(false)}>&#x2715;</span></span>
-                <input value={value} onInput={(e) => setValue(e.target.value)} placeholder="Page name..."></input><br/>
+                <input value={email} onInput={(e) => setEmail(e.target.value)}></input><br/>
+                <input value={password} onInput={(e) => setPassword(e.target.value)} type="password"></input><br/>
                 <button onClick={handleClick}>{buttonText}</button>
             </div>
         </div>
