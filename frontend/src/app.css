@@ -8,6 +8,18 @@
     height: 100%;
 }
 
+.placeholder {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: rgb(157, 157, 157);
+}
+
+.placeholder > h1 {
+    margin: 0;
+}
+
 PageList {
     grid-area: notes;
     height: 100%;

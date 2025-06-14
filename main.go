@@ -25,6 +25,9 @@ func main() {
 	}
 
 	FileMenu := AppMenu.AddSubmenu("File")
+	FileMenu.AddText("New Page", keys.CmdOrCtrl("n"), func(cd *menu.CallbackData) {
+		runtime.EventsEmit(app.ctx, "new-page")
+	})
 	FileMenu.AddText("Save", keys.CmdOrCtrl("s"), func(cd *menu.CallbackData) {
 		runtime.EventsEmit(app.ctx, "save")
 	})

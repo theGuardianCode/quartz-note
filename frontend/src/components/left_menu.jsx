@@ -1,11 +1,15 @@
 import { useEffect, useState } from 'preact/hooks';
 import { supabase } from '../../connection';
-import { v4 as uuidv4 } from 'uuid';
+import { EventsOn } from '../../wailsjs/runtime/runtime';
 import './left_menu.css';
 
 export function LeftMenu({pages, changePage, showCreateModal, showAccountModal, logout}) {
     const [accountInfo, setAccountInfo] = useState();
     const [showAccountMenu, setShowAccountMenu] = useState(false);
+
+    useEffect(() => {
+        EventsOn("new-page", toggleModal);
+    }, []);
 
     useEffect(async () => {
         const { data, error } = await supabase.auth.getUser()
@@ -31,12 +35,12 @@ export function LeftMenu({pages, changePage, showCreateModal, showAccountModal, 
             <div className="account-section">
                 {accountInfo ? 
                 <span id="account-menu">
-                    <span id="account-btn" onClick={() => setShowAccountMenu(!showAccountMenu)}>Account <i class="arrow up"></i></span>
                     { showAccountMenu ? 
                     <div id="menu-content">
                         <span onClick={logout}>Logout</span>
                     </div> :
                     null}
+                    <span id="account-btn" onClick={() => setShowAccountMenu(!showAccountMenu)}>Account {!showAccountMenu ? <i class="arrow up"></i> : <i className="arrow down"></i>}</span>
                 </span> : 
                 <span id="login-btn" onClick={() => showAccountModal(true)}>Log In</span>}
             </div>

@@ -102,7 +102,13 @@ export function App(props) {
             {showCreateModal ? <Modal message="New page:" buttonText="create" buttonCallback={createNote} toggleModal={setShowCreateModal}/> : null}
             {showAccountModal ? <AccountModal message="Log-In" buttonText="Log In" buttonCallback={login} toggleModal={setShowAccountModal}/> : null}
             <LeftMenu pages={pages} changePage={changePage} showCreateModal={setShowCreateModal} showAccountModal={setShowAccountModal} logout={logout}/>
-            {Object.keys(activePage).length > 0 ? <Editor data={blocks} pageId={activePage.id} pageName={activePage.name}/> : "Select a page"}
+            {Object.keys(activePage).length > 0 ?
+                <Editor data={blocks} pageId={activePage.id} pageName={activePage.name}/> :
+                <div class="placeholder">
+                    <h1>Select a page</h1>
+                    <p>New Page - Cmd or Ctrl + n</p>
+                </div>
+            }
         </div>
     )
 }

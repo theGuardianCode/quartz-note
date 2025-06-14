@@ -13,15 +13,19 @@ li {
     background-color: var(--accent);
 }
 
+.page-section {
+    margin: 20px 0px;
+}
+
 ul {
     padding: 0;
     margin: 0;
 }
 
 .left-menu {
-    /* min-height: 100%; */
-    border-right: 2px solid black;
-    padding: 5px 10px;
+    background-color: #f1f1f1;
+    padding: 0 10px;
+    margin: 5px 0;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -32,7 +36,21 @@ ul {
     flex-direction: row;
     justify-content: space-between;
     padding-left: 10px;
+    padding-right: 0px;
+    height: 20px;
+    padding-bottom: 10px;
     font-weight: bold;
+}
+
+#page-header > button {
+    display: none;
+    width: 20px;
+    height: 20px;
+}
+
+#page-header:hover > button {
+    display: flex;
+    justify-content: center;
 }
 
 .page-container {
@@ -104,9 +122,15 @@ ul {
     border-width: 0 2px 2px 0;
     display: inline-block;
     padding: 3px;
+    transition: 0.5s;
 }
 
 .up {
     transform: rotate(-135deg);
     -webkit-transform: rotate(-135deg);
+}
+
+.down {
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
 }
