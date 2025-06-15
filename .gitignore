@@ -3,4 +3,4 @@ node_modules
 frontend/dist
 frontend/.env*
 
-*/.DS_Store
+.DS_Store
