@@ -24,11 +24,13 @@ ul {
 
 .left-menu {
     background-color: #f1f1f1;
-    padding: 0 10px;
-    margin: 5px 0;
+    padding: 10px 10px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    flex-shrink: 0;
+    white-space: nowrap;
+    overflow-y: auto;
 }
 
 #page-header {
@@ -105,6 +107,8 @@ ul {
     background-color: var(--primary);
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     border-radius: 15px;
+    display: flex;
+    flex-direction: column;
 }
 
 #menu-content > span {

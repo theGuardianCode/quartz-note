@@ -1,15 +1,16 @@
 import { useRef, useEffect } from "preact/hooks";
+
 import EditorJS from '@editorjs/editorjs';
 import Header from '@editorjs/header';
-import { v4 as uuidv4 } from 'uuid';
+import EditorjsList from '@editorjs/list';
+import Desmos from "../blocks/desmos";
 
 import { EventsOn } from '../../wailsjs/runtime/runtime';
-import { supabase } from "../../connection";
 import updateDatabase from "../updateDatabase";
 
 import './editor.css';
 
-export function Editor({ data, pageId, pageName }) {
+export function Editor({ initialData, pageId, pageName }) {
     let editor = useRef(null);
     let activePage = useRef(pageId);
 
@@ -18,20 +19,25 @@ export function Editor({ data, pageId, pageName }) {
         editor.current = new EditorJS({
             holder: 'editorjs',
             tools: {
-                header: Header
+                header: Header,
+                graph: Desmos,
+                list: {
+                    class: EditorjsList,
+                    inlineToolbar: true,
+                    config: {
+                        defaultStyle: 'unordered'
+                    }
+                }
             },
         });
 
         // Wails save event listener
         EventsOn("save", () => {
             editor.current.save().then(async (output) => {
+                console.log(output);
                 updateDatabase(output.blocks, activePage.current, (success, err) => {
                     if (success) {
                         console.log("Blocks saved successfully!");
-                        // Reload editor data to sync with db
-                        editor.current.isReady.then(() => {
-                            editor.current.render(data);
-                        })
                     } else {
                         console.log(`Error saving blocks:`)
                         console.log(err)
@@ -45,10 +51,10 @@ export function Editor({ data, pageId, pageName }) {
         // Change content when data prop changes
         if (editor.current) {
             editor.current.isReady.then(() => {
-                editor.current.render(data);
+                editor.current.render(initialData);
             })
         }
-    }, [data])
+    }, [initialData])
 
     useEffect(() => {
         // Change active page when prop changes
@@ -56,7 +62,7 @@ export function Editor({ data, pageId, pageName }) {
     }, [pageId]);
 
     return (
-        <div>
+        <div class="editor-container">
             <span class="title-container"><h2>{pageName}</h2></span>
             <div id="editorjs"></div>
         </div>

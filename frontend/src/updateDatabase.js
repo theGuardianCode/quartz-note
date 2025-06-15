@@ -4,7 +4,6 @@ export default async function updateDatabase(blocks, pageId, callback) {
     const newBlockIds = blocks.map(block => block.id)
 
     // Get the blocks the user has permissions for (current page)
-    console.log(`Page id: ${pageId}`);
     const { data: blockData, error: blockError } = await supabase.from('blocks').select().eq('pageId', pageId);
     if (blockError) {
         console.log("Update failed at retrieving existing blocks");

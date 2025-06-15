@@ -37,6 +37,7 @@ export function LeftMenu({pages, changePage, showCreateModal, showAccountModal, 
                 <span id="account-menu">
                     { showAccountMenu ? 
                     <div id="menu-content">
+                        <p>{accountInfo.email}</p>
                         <span onClick={logout}>Logout</span>
                     </div> :
                     null}

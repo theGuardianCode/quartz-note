@@ -1,11 +1,7 @@
 .container {
-    display: grid;
-    grid-template-columns: 1fr 3.5fr;
-    grid-template-rows: 1fr;
-    grid-template-areas: 
-        "notes" "editor";
-    gap: 5px;
     height: 100%;
+    display: flex;
+    overflow: hidden;
 }
 
 .placeholder {
@@ -18,14 +14,4 @@
 
 .placeholder > h1 {
     margin: 0;
-}
-
-PageList {
-    grid-area: notes;
-    height: 100%;
-}
-
-Editor {
-    grid-area: editor;
-    height: 100%;
 }
