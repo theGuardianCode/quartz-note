@@ -11,6 +11,7 @@ export function Modal({message, buttonText, buttonCallback, toggleModal}) {
 
     function handlekeyDown(event) {
         if (event.key == 'Escape') {
+            event.preventDefault();
             toggleModal(false);
         }
     }

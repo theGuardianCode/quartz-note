@@ -13,6 +13,7 @@
     "@editorjs/header": "^2.8.8",
     "@editorjs/list": "^2.0.8",
     "@supabase/supabase-js": "^2.50.0",
+    "katex": "^0.16.22",
     "preact": "^10.10.1",
     "uuid": "^11.1.0"
   },
