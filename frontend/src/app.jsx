@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'preact/hooks';
 import { Editor } from './components/editor';
 import { LeftMenu } from './components/left_menu';
-import { supabase } from '../connection';
 import { Modal } from './components/modal';
+import { Chat } from './components/chat';
+import { supabase } from '../connection';
 import { AccountModal } from './components/account_modal';
 import { v4 as uuidv4 } from 'uuid';
 import './app.css'
@@ -109,6 +110,7 @@ export function App(props) {
                     <p>New Page - Cmd or Ctrl + n</p>
                 </div>
             }
+            <Chat />
         </div>
     )
 }

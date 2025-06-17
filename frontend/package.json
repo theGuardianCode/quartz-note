@@ -12,6 +12,7 @@
     "@editorjs/editorjs": "^2.30.8",
     "@editorjs/header": "^2.8.8",
     "@editorjs/list": "^2.0.8",
+    "@google/genai": "^1.5.1",
     "@supabase/supabase-js": "^2.50.0",
     "katex": "^0.16.22",
     "preact": "^10.10.1",
