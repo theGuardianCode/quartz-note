@@ -4,13 +4,13 @@ import './katex-math.css';
 
 export default class KatexMath {
     constructor({data}) {
-        this.mathString = data.string ? data.string : "\\frac{a}{b}";
+        this.mathString = data.string ? data.string : "";
 
         this.wrapper = undefined;
         this.display = undefined;
         this.input = undefined;
 
-        this.editMode = true;
+        this.editMode = data.string == "" ? true : false;
     }
 
     static get toolbox() {

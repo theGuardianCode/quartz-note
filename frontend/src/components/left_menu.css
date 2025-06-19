@@ -23,7 +23,7 @@ ul {
 }
 
 .left-menu {
-    background-color: #f1f1f1;
+    background-color: var(--background-secondary);
     padding: 10px 10px;
     display: flex;
     flex-direction: column;
