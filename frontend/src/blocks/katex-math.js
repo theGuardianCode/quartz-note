@@ -10,7 +10,7 @@ export default class KatexMath {
         this.display = undefined;
         this.input = undefined;
 
-        this.editMode = data.string == "" ? true : false;
+        this.editMode = this.mathString == "" ? true : false;
     }
 
     static get toolbox() {
