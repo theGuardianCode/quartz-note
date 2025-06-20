@@ -1,5 +1,11 @@
-import {render} from 'preact';
-import {App} from './app';
+import React from 'react';
+import {createRoot} from 'react-dom/client';
+import App from './app';
 import './style.css';
 
-render(<App/>, document.getElementById('app'));
+const container = document.getElementById('root');
+const root = createRoot(container);
+
+root.render(
+    <App/>
+);

@@ -1,55 +1,91 @@
-import { useEffect, useState } from 'preact/hooks';
+import { act, useEffect, useState } from 'react';
 import { Editor } from './components/editor';
 import { LeftMenu } from './components/left_menu';
 import { Modal } from './components/modal';
-import { Chat } from './components/chat';
+import { ChatPane } from './components/chat';
 import { supabase } from '../connection';
 import { AccountModal } from './components/account_modal';
 import { v4 as uuidv4 } from 'uuid';
-import './app.css'
+import './app.css';
+import { Session, User, WeakPassword } from '@supabase/supabase-js';
 
-export function App(props) {
-    const [pages, setPages] = useState([]);
-    const [blocks, setBlocks] = useState();
-    const [activePage, setActivePage] = useState({});
+type BlockSchema = {
+    time: number;
+    blocks: any[];
+    version: string;
+};
+
+type PageSchema = {
+    id: string;
+    name: string;
+};
+
+type AuthDataSchema = {
+    user: User;
+    session: Session;
+    weakPassword?: WeakPassword;
+} | {
+    user: null;
+    session: null;
+    weakPassword?: null;
+};
+
+type PageSchemaDb = {
+    id: string;
+    created_at: number;
+    name: string;
+    userId: string
+}
+
+function App() {
+    const [pages, setPages] = useState<any[]>([]);
+    const [blocks, setBlocks] = useState<BlockSchema>();
+    const [activePage, setActivePage] = useState<PageSchema>();
+    const [authData, setAuthData] = useState<AuthDataSchema>();
 
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showAccountModal, setShowAccountModal] = useState(false);
+    const [subscribed, setSubscribed] = useState(false);
 
-    useEffect(async () => {
+    useEffect(() => {
         loadPages();
 
         // Supabase listener to update page list when db changes
-        const channel = supabase
-            .channel('realtime:pages')
-            .on(
-                'postgres_changes',
-                {
-                    event: '*',
-                    schema: 'public',
-                    table: 'pages'
-                },
-                (payload) => {
-                    if (payload.new?.userId == authData.user.id || payload.old?.userId == authData.user.id) {
-                        loadPages();
+        if (!subscribed) {
+            try {
+                const channel = supabase
+                .channel('realtime:pages')
+                .on(
+                    'postgres_changes',
+                    {
+                        event: '*',
+                        schema: 'public',
+                        table: 'pages'
+                    },
+                    (payload) => {
+                        if ((payload.new as PageSchemaDb).userId == authData?.user?.id || (payload.old as PageSchemaDb).userId == authData?.user?.id) {
+                            loadPages();
+                        }
                     }
-                }
-            )
-            .subscribe();
+                )
+                .subscribe();
+                setSubscribed(true);
+            } catch (error) {}
+        }
 
     }, [])
 
-    async function changePage(pageId, pageName) {
+    async function changePage(pageId: string, pageName: string) {
         // Retrieve blocks from supabase
         const { data, error } = await supabase.from('blocks').select().order('created_at', {ascending: true}).eq("pageId", pageId);
-        let schema = {
+        let schema: BlockSchema = {
             time: new Date().getTime(),
             blocks: [],
             version: "2.31.0-rc.7"
         }
 
         // Format in editor.js format
-        data.forEach(block => {
+        data?.forEach(block => {
             schema.blocks.push({id: block.id, type: block.type, data: block.data});
         })
 
@@ -57,7 +93,7 @@ export function App(props) {
         setBlocks(schema);
     }
 
-    async function login(email, password) {
+    async function login(email: string, password: string) {
         const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
             email: email,
             password: password
@@ -65,6 +101,7 @@ export function App(props) {
         if (authError != null) {
             console.log(authError);
         }
+        setAuthData(authData);
 
         const { data, error } = await supabase.auth.getUser();
         if (data.user) {
@@ -75,7 +112,7 @@ export function App(props) {
     async function logout() {
         await supabase.auth.signOut();
         loadPages()
-        setActivePage({})
+        setActivePage(undefined);
     }
 
     async function loadPages() {
@@ -88,9 +125,9 @@ export function App(props) {
         }
     }
 
-    async function createNote(filename) {
+    async function createNote(filename: string) {
         const { data, error } = await supabase.auth.getUser();
-        const schema = {id: uuidv4(), name: filename, userId: data.user.id};
+        const schema = {id: uuidv4(), name: filename, userId: data.user?.id};
         const { data: record, error: err } = await supabase.from('pages').insert(schema).select();
         console.log(record);
         if (err) {
@@ -99,18 +136,20 @@ export function App(props) {
     }
 
     return (
-        <div class="container">
+        <div className="container">
             {showCreateModal ? <Modal message="New page:" buttonText="create" buttonCallback={createNote} toggleModal={setShowCreateModal}/> : null}
             {showAccountModal ? <AccountModal message="Log-In" buttonText="Log In" buttonCallback={login} toggleModal={setShowAccountModal}/> : null}
             <LeftMenu pages={pages} changePage={changePage} showCreateModal={setShowCreateModal} showAccountModal={setShowAccountModal} logout={logout}/>
-            {Object.keys(activePage).length > 0 ?
-                <Editor initialData={blocks} pageId={activePage.id} pageName={activePage.name}/> :
-                <div class="placeholder">
+            {activePage ?
+                <Editor initialData={blocks} pageId={activePage?.id} pageName={activePage?.name}/> :
+                <div className="placeholder">
                     <h1>Select a page</h1>
                     <p>New Page - Cmd or Ctrl + n</p>
                 </div>
             }
-            <Chat />
+            <ChatPane />
         </div>
-    )
+    );
 }
+
+export default App;

@@ -1,5 +1,11 @@
-export default class Desmos {
-    constructor({data}) {
+import { BlockTool } from "@editorjs/editorjs";
+
+export default class Desmos implements BlockTool {
+    data: any;
+    desmos: any;
+    calculator: any;
+
+    constructor({data}: any) {
         this.data = data;
     }
 
@@ -15,7 +21,7 @@ export default class Desmos {
 
         const elt = document.createElement('div');
         elt.id = 'calculator';
-        elt.style='width: 600px; height: 400px;'
+        elt.setAttribute('style', 'width: 600px; height: 400px;');
         wrapper.appendChild(elt);
 
         const script = document.createElement('script');
@@ -36,7 +42,7 @@ export default class Desmos {
         return wrapper;
     }
 
-    save(blockContent) {
+    save() {
         return {
             calculator: this.calculator.getState()
         }
