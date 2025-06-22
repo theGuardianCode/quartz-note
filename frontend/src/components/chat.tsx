@@ -10,6 +10,7 @@ export function ChatPane() {
     let chat = useRef<Chat>();
     const [conversation, setConversation] = useState<any[]>([]);
     const [message, setMessage] = useState("");
+    const messageListRef = useRef<any[]>([]);
 
     async function sendMessage() {
         if (message !== "") {
@@ -18,10 +19,13 @@ export function ChatPane() {
                 setConversation([...conversation, "Error retrieving user data - you might not be logged in"]);
                 return;
             }
+            messageListRef.current.push({role: 'user', text: message});
+            setConversation(messageListRef.current);
+            setMessage("");
 
             const text = await send(message, userData.user, chat.current);
-            setConversation([...conversation, message, text]);
-            setMessage("");
+            messageListRef.current.push({role: 'agent', text: text});
+            setConversation(messageListRef.current);
         }
     }
 
@@ -39,7 +43,7 @@ export function ChatPane() {
         <div className="ai-chat">
             <ul>
                 {conversation.map((msg) => (
-                    <li className="msg-box">{msg}</li>
+                    <li className={`msg-box ${msg.role}`}>{msg.text}</li>
                 ))}
             </ul>
             <div className="input">
