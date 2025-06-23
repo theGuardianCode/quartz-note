@@ -1,6 +1,7 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
+import { ChatPane } from "./chat";
 
-import EditorJS, { EditorConfig, ToolConstructable } from '@editorjs/editorjs';
+import EditorJS, { EditorConfig, OutputData, ToolConstructable } from '@editorjs/editorjs';
 import Header from '@editorjs/header';
 import EditorjsList from '@editorjs/list';
 import Desmos from "../blocks/desmos";
@@ -21,6 +22,25 @@ export function Editor({ initialData, pageId, pageName }: EditorProps) {
     const editor = useRef<EditorJS | null>(null);
     const activePage = useRef<string | undefined>(pageId);
     const hasInitialised = useRef(false);
+    const [data, setData] = useState<OutputData>(initialData);
+
+    function saveData() {
+        if (editor.current && hasInitialised.current) {
+            editor.current.isReady.then(() => {
+                editor.current?.save().then(async (output) => {
+                    setData(output)
+                    updateDatabase(output.blocks, activePage.current!, (success: boolean, err: any) => {
+                        if (success) {
+                            console.log("Blocks saved successfully!");
+                        } else {
+                            console.log(`Error saving blocks:`)
+                            console.log(err)
+                        }
+                    });
+                });
+            });
+        }
+    }
 
     useEffect(() => {
         // Create editor
@@ -45,19 +65,7 @@ export function Editor({ initialData, pageId, pageName }: EditorProps) {
         hasInitialised.current = true;
 
         // Wails save event listener
-        EventsOn("save", () => {
-            editor.current?.save().then(async (output) => {
-                console.log(output);
-                updateDatabase(output.blocks, activePage.current!, (success: boolean, err: any) => {
-                    if (success) {
-                        console.log("Blocks saved successfully!");
-                    } else {
-                        console.log(`Error saving blocks:`)
-                        console.log(err)
-                    }
-                });
-            })
-        })
+        EventsOn("save", saveData);
     }, []);
 
     useEffect(() => {
@@ -75,9 +83,12 @@ export function Editor({ initialData, pageId, pageName }: EditorProps) {
     }, [pageId]);
 
     return (
-        <div className="editor-container">
-            <span className="title-container"><h2>{pageName}</h2></span>
-            <div id="editorjs"></div>
-        </div>
+        <>
+            <div className="editor-container">
+                <span className="title-container"><h2>{pageName}</h2></span>
+                <div id="editorjs"></div>
+            </div>
+            <ChatPane pageContents={data.blocks}/>
+        </>
     );
 }

@@ -1,8 +1,7 @@
-import { act, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Editor } from './components/editor';
 import { LeftMenu } from './components/left_menu';
 import { Modal } from './components/modal';
-import { ChatPane } from './components/chat';
 import { supabase } from '../connection';
 import { AccountModal } from './components/account_modal';
 import { v4 as uuidv4 } from 'uuid';
@@ -147,7 +146,6 @@ function App() {
                     <p>New Page - Cmd or Ctrl + n</p>
                 </div>
             }
-            <ChatPane />
         </div>
     );
 }

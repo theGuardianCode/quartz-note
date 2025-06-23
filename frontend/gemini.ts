@@ -6,6 +6,9 @@ const ai = new GoogleGenAI({apiKey: import.meta.env.VITE_GEMINI_KEY});
 export async function createChat() {
     const chat = await ai.chats.create({
         model: "gemini-2.0-flash",
+        config: {
+            systemInstruction: "You are an AI agent called Galileo, helping students understand their notes and STEM topics"
+        }
     });
     return chat;
 }
