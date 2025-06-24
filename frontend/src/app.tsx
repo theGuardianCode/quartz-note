@@ -128,7 +128,6 @@ function App() {
         const { data, error } = await supabase.auth.getUser();
         const schema = {id: uuidv4(), name: filename, userId: data.user?.id};
         const { data: record, error: err } = await supabase.from('pages').insert(schema).select();
-        console.log(record);
         if (err) {
             throw err;
         }
