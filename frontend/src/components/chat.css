@@ -48,3 +48,9 @@
     box-shadow: 2px 2px 5px #888888;
     border-radius: 10px;
 }
+
+.close-btn {
+    position: absolute;
+    top: 5;
+    left: 5;
+}

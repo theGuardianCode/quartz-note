@@ -31,6 +31,11 @@ export function LeftMenu({pages, changePage, showCreateModal, showAccountModal, 
         showCreateModal(true);
     }
 
+    function handleLogout() {
+        logout();
+        setAccountInfo(null);
+    }
+
     return (
         <div className="left-menu">
             <div className="page-section">
@@ -49,7 +54,7 @@ export function LeftMenu({pages, changePage, showCreateModal, showAccountModal, 
                     { showAccountMenu ? 
                     <div id="menu-content">
                         <p>{accountInfo.email}</p>
-                        <span onClick={() => {logout()}}>Logout</span>
+                        <span onClick={handleLogout}>Logout</span>
                     </div> :
                     null}
                     <span id="account-btn" onClick={() => setShowAccountMenu(!showAccountMenu)}>Account {!showAccountMenu ? <i className="arrow up"></i> : <i className="arrow down"></i>}</span>

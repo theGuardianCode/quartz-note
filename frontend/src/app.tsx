@@ -111,7 +111,7 @@ function App() {
 
     async function logout() {
         await supabase.auth.signOut();
-        loadPages()
+        loadPages();
         setActivePage(undefined);
     }
 

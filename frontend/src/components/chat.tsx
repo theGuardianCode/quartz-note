@@ -11,9 +11,10 @@ import "./chat.css";
 type ChatProps = {
     pageContents: OutputBlockData[];
     pageId: string | undefined;
+    hideChat: Function;
 };
 
-export function ChatPane({pageContents, pageId}: ChatProps) {
+export function ChatPane({pageContents, pageId, hideChat}: ChatProps) {
     let chat = useRef<Chat>();
     const [conversation, setConversation] = useState<any[]>([]);
     const [message, setMessage] = useState("");
@@ -87,6 +88,9 @@ export function ChatPane({pageContents, pageId}: ChatProps) {
 
     return (
         <div className="ai-chat">
+            <div className="close-btn" onClick={() => hideChat()}>
+                X
+            </div>
             <ul>
                 {conversation.map((msg) => {
                     return <li key={msg.id} className={`msg-box ${msg.role}`} dangerouslySetInnerHTML={{__html: marked.parse(msg.text)}}></li>

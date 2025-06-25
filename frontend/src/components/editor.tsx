@@ -24,7 +24,7 @@ export function Editor({ initialData, pageId, pageName }: EditorProps) {
     const activePage = useRef<string | undefined>(pageId);
     const hasInitialised = useRef(false);
     const [data, setData] = useState<OutputData>(initialData);
-    const [initialMessages, setInitialMessages] = useState();
+    const [showChat, setShowChat] = useState(false);
 
     function saveData() {
         if (editor.current && hasInitialised.current) {
@@ -90,7 +90,7 @@ export function Editor({ initialData, pageId, pageName }: EditorProps) {
                 <span className="title-container"><h2>{pageName}</h2></span>
                 <div id="editorjs"></div>
             </div>
-            <ChatPane pageContents={data.blocks} pageId={pageId}/>
+            {showChat ? <ChatPane pageContents={data.blocks} pageId={pageId} hideChat={() => setShowChat(false)}/> : <button onClick={() => setShowChat(true)}>&lt;</button> }
         </>
     );
 }
