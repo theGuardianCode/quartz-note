@@ -88,7 +88,7 @@ export function ChatPane({pageContents, pageId, hideChat}: ChatProps) {
 
     return (
         <div className="ai-chat">
-            <div className="close-btn" onClick={() => hideChat()}>
+            <div className="close-chat-btn" onClick={() => hideChat()}>
                 X
             </div>
             <ul>
