@@ -99,8 +99,9 @@ function App() {
         })
         if (authError != null) {
             console.log(authError);
+        } else {
+            setAuthData(authData);
         }
-        setAuthData(authData);
 
         const { data, error } = await supabase.auth.getUser();
         if (data.user) {
@@ -136,7 +137,7 @@ function App() {
     return (
         <div className="container">
             {showCreateModal ? <Modal message="New page:" buttonText="create" buttonCallback={createNote} toggleModal={setShowCreateModal}/> : null}
-            {showAccountModal ? <AccountModal message="Log-In" buttonText="Log In" buttonCallback={login} toggleModal={setShowAccountModal}/> : null}
+            {showAccountModal ? <AccountModal buttonCallback={login} toggleModal={setShowAccountModal}/> : null}
             <LeftMenu pages={pages} changePage={changePage} showCreateModal={setShowCreateModal} showAccountModal={setShowAccountModal} logout={logout}/>
             {activePage ?
                 <Editor initialData={blocks} pageId={activePage?.id} pageName={activePage?.name}/> :

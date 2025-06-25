@@ -4,6 +4,7 @@ import { createChat, send } from "../../gemini";
 import { supabase } from "../../connection";
 import { Chat } from "@google/genai";
 import { OutputBlockData } from "@editorjs/editorjs";
+import { marked } from "marked";
 
 import "./chat.css";
 
@@ -88,7 +89,7 @@ export function ChatPane({pageContents, pageId}: ChatProps) {
         <div className="ai-chat">
             <ul>
                 {conversation.map((msg) => {
-                    return <li key={msg.id} className={`msg-box ${msg.role}`}>{msg.text}</li>
+                    return <li key={msg.id} className={`msg-box ${msg.role}`} dangerouslySetInnerHTML={{__html: marked.parse(msg.text)}}></li>
                 })}
             </ul>
             <div className="input">

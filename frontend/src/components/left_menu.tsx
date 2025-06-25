@@ -18,16 +18,14 @@ export function LeftMenu({pages, changePage, showCreateModal, showAccountModal, 
 
     useEffect(() => {
         EventsOn("new-page", toggleModal);
-    }, []);
 
-    useEffect(() => {
         const getUser = async () => {
             const { data, error } = await supabase.auth.getUser()
             setAccountInfo(data.user);
         }
 
         getUser();
-    })
+    }, []);
 
     function toggleModal() {
         showCreateModal(true);

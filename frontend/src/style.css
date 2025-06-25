@@ -9,6 +9,8 @@ body, html {
     --primary-font: black;
     --dark-accent: #2c5642;
     --background-secondary: #f1f1f1;
+    --error-red: rgb(241 106 80);
+    --error-border: darkred;
 }
 
 App {
