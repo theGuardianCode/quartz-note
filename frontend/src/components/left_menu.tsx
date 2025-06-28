@@ -43,7 +43,7 @@ export function LeftMenu({pages, changePage, showCreateModal, showAccountModal, 
                 <ul>
                     {pages.map(page => (
                         <li className="page-container" key={page.id}>
-                            <span className="page-title" onClick={() => changePage(page.id, page.name)}>{page.name}</span><button>&#8942;</button>
+                            <span className="page-title" onClick={() => changePage(page.id, page.name, page.type)}>{page.name}</span><button>&#8942;</button>
                         </li>
                     ))}
                 </ul>

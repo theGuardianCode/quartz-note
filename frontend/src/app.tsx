@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Editor } from './components/editor';
 import { LeftMenu } from './components/left_menu';
 import { Modal } from './components/modal';
 import { supabase } from '../connection';
 import { AccountModal } from './components/account_modal';
 import { v4 as uuidv4 } from 'uuid';
-import './app.css';
 import { Session, User, WeakPassword } from '@supabase/supabase-js';
+import './app.css';
+import { Switcher } from './components/switcher';
 
 type BlockSchema = {
     time: number;
@@ -17,6 +17,7 @@ type BlockSchema = {
 type PageSchema = {
     id: string;
     name: string;
+    type: string;
 };
 
 type AuthDataSchema = {
@@ -38,7 +39,6 @@ type PageSchemaDb = {
 
 function App() {
     const [pages, setPages] = useState<any[]>([]);
-    const [blocks, setBlocks] = useState<BlockSchema>();
     const [activePage, setActivePage] = useState<PageSchema>();
     const [authData, setAuthData] = useState<AuthDataSchema>();
 
@@ -74,22 +74,8 @@ function App() {
 
     }, [])
 
-    async function changePage(pageId: string, pageName: string) {
-        // Retrieve blocks from supabase
-        const { data, error } = await supabase.from('blocks').select().order('created_at', {ascending: true}).eq("pageId", pageId);
-        let schema: BlockSchema = {
-            time: new Date().getTime(),
-            blocks: [],
-            version: "2.31.0-rc.7"
-        }
-
-        // Format in editor.js format
-        data?.forEach(block => {
-            schema.blocks.push({id: block.id, type: block.type, data: block.data});
-        })
-
-        setActivePage({id: pageId, name: pageName});
-        setBlocks(schema);
+    async function changePage(pageId: string, pageName: string, pageType: string) {
+        setActivePage({id: pageId, name: pageName, type: pageType})
     }
 
     async function login(email: string, password: string) {
@@ -125,10 +111,10 @@ function App() {
         }
     }
 
-    async function createNote(filename: string) {
+    async function createNote(filename: string, pageType: string) {
         const { data, error } = await supabase.auth.getUser();
-        const schema = {id: uuidv4(), name: filename, userId: data.user?.id};
-        const { data: record, error: err } = await supabase.from('pages').insert(schema).select();
+        const schema = {id: uuidv4(), name: filename, userId: data.user?.id, type: pageType};
+        const { error: err } = await supabase.from('pages').insert(schema).select();
         if (err) {
             throw err;
         }
@@ -140,7 +126,7 @@ function App() {
             {showAccountModal ? <AccountModal buttonCallback={login} toggleModal={setShowAccountModal}/> : null}
             <LeftMenu pages={pages} changePage={changePage} showCreateModal={setShowCreateModal} showAccountModal={setShowAccountModal} logout={logout}/>
             {activePage ?
-                <Editor initialData={blocks} pageId={activePage?.id} pageName={activePage?.name}/> :
+                <Switcher page={activePage} /> :
                 <div className="placeholder">
                     <h1>Select a page</h1>
                     <p>New Page - Cmd or Ctrl + n</p>

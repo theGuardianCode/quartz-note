@@ -14,15 +14,20 @@ import { supabase } from "../../connection";
 
 import './editor.css';
 
-type EditorProps = {
-    initialData: any;
-    pageId: string | undefined;
-    pageName: string | undefined;
+type PageSchema = {
+    id: string;
+    name: string;
+    type: string;
 };
 
-export function Editor({ initialData, pageId, pageName }: EditorProps) {
+type EditorProps = {
+    initialData: any;
+    page: PageSchema;
+};
+
+export function Editor({ initialData, page }: EditorProps) {
     const editor = useRef<EditorJS | null>(null);
-    const activePage = useRef<string | undefined>(pageId);
+    const activePage = useRef<PageSchema | undefined>(page);
     const hasInitialised = useRef(false);
     const [data, setData] = useState<OutputData>(initialData);
     const [showChat, setShowChat] = useState(false);
@@ -32,7 +37,7 @@ export function Editor({ initialData, pageId, pageName }: EditorProps) {
             editor.current.isReady.then(() => {
                 editor.current?.save().then(async (output) => {
                     setData(output)
-                    updateDatabase(output.blocks, activePage.current!, (success: boolean, err: any) => {
+                    updateDatabase(output.blocks, activePage.current?.id!, (success: boolean, err: any) => {
                         if (success) {
                             console.log("Blocks saved successfully!");
                         } else {
@@ -83,16 +88,16 @@ export function Editor({ initialData, pageId, pageName }: EditorProps) {
 
     useEffect(() => {
         // Change active page when prop changes
-        activePage.current = pageId;
-    }, [pageId]);
+        activePage.current = page;
+    }, [page]);
 
     return (
         <>
             <div className="editor-container">
-                <span className="title-container"><h2>{pageName}</h2></span>
+                <span className="title-container"><h2>{page.name}</h2></span>
                 <div id="editorjs"></div>
             </div>
-            {showChat ? <ChatPane pageContents={data.blocks} pageId={pageId} hideChat={() => setShowChat(false)}/> : <button onClick={() => setShowChat(true)}>&lt;</button> }
+            {showChat ? <ChatPane pageContents={data.blocks} pageId={page.id} hideChat={() => setShowChat(false)}/> : <button onClick={() => setShowChat(true)}>&lt;</button> }
         </>
     );
 }
