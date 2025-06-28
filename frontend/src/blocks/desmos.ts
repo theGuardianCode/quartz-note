@@ -39,6 +39,14 @@ export default class Desmos implements BlockTool {
         }
         wrapper.appendChild(script);
 
+        wrapper.addEventListener("keydown", (e) => {
+            e.stopPropagation();
+        });
+
+        wrapper.addEventListener("keyup", (e) => {
+            e.stopPropagation();
+        });
+
         return wrapper;
     }
 

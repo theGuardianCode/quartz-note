@@ -6,6 +6,7 @@ import Header from '@editorjs/header';
 import EditorjsList from '@editorjs/list';
 import Desmos from "../blocks/desmos";
 import KatexMath from "../blocks/katex-math";
+import CodeBlock from "../blocks/code";
 
 import { EventsOn } from '../../wailsjs/runtime/runtime';
 import updateDatabase from "../updateDatabase";
@@ -53,6 +54,7 @@ export function Editor({ initialData, pageId, pageName }: EditorProps) {
                 header: Header,
                 graph: Desmos,
                 math: KatexMath,
+                code: CodeBlock,
                 list: {
                     class: EditorjsList as unknown as ToolConstructable,
                     inlineToolbar: true,
