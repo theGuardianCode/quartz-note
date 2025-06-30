@@ -43,7 +43,7 @@ export function Switcher({page}: SwitcherProps) {
         if (page.type == "note") fetchBlocks();
     }, [page])
 
-    if (page.type == "note") {
+    if (page.type == "note" && blocks !== undefined) {
         return <Editor initialData={blocks} page={page} />
     } else {
         return <Canvas page={page}/>;
