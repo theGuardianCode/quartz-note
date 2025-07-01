@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
-import { createChat, send } from "../../gemini";
-import { supabase } from "../../connection";
+import { createChat, send } from "../scripts/gemini";
+import { supabase } from "../scripts/connection";
 import { Chat } from "@google/genai";
 import { OutputBlockData } from "@editorjs/editorjs";
 import { marked } from "marked";

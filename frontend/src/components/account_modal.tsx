@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { supabase } from "../../connection";
+import { supabase } from "../scripts/connection";
 import './modal.css';
 
 type ModalProps = {

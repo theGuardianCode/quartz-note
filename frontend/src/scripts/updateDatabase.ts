@@ -1,5 +1,5 @@
 import { OutputBlockData } from "@editorjs/editorjs";
-import { supabase } from "../connection";
+import { supabase } from "./connection";
 
 type CompleteBlock = OutputBlockData & {
     pageId: string | undefined;

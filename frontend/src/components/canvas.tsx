@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { getSnapshot, loadSnapshot, Tldraw, useEditor } from "tldraw";
 import { EventsOn } from "../../wailsjs/runtime/runtime";
-import { supabase } from "../../connection";
+import { supabase } from "../scripts/connection";
 import 'tldraw/tldraw.css';
 
 type PageSchema = {

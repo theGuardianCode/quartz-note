@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../../connection";
+import { supabase } from "../scripts/connection";
 import { Editor } from "./editor";
 import { Canvas } from "./canvas";
 
@@ -43,9 +43,10 @@ export function Switcher({page}: SwitcherProps) {
         if (page.type == "note") fetchBlocks();
     }, [page])
 
-    if (page.type == "note" && blocks !== undefined) {
+    console.log(page);
+    if (page.type == "note") {
         return <Editor initialData={blocks} page={page} />
-    } else {
+    } else if (page.type == "canvas") {
         return <Canvas page={page}/>;
     }
 }

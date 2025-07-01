@@ -9,8 +9,7 @@ import KatexMath from "../blocks/katex-math";
 import CodeBlock from "../blocks/code";
 
 import { EventsOn } from '../../wailsjs/runtime/runtime';
-import updateDatabase from "../updateDatabase";
-import { supabase } from "../../connection";
+import updateDatabase from "../scripts/updateDatabase";
 
 import './editor.css';
 

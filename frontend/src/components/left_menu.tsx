@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../../connection';
+import { supabase } from '../scripts/connection';
 import { EventsOn } from '../../wailsjs/runtime/runtime';
 import './left_menu.css';
 import { User } from '@supabase/supabase-js';

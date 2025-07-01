@@ -1,18 +1,12 @@
 import { useEffect, useState } from 'react';
 import { LeftMenu } from './components/left_menu';
 import { Modal } from './components/modal';
-import { supabase } from '../connection';
+import { supabase } from './scripts/connection';
 import { AccountModal } from './components/account_modal';
 import { v4 as uuidv4 } from 'uuid';
 import { Session, User, WeakPassword } from '@supabase/supabase-js';
-import './app.css';
 import { Switcher } from './components/switcher';
-
-type BlockSchema = {
-    time: number;
-    blocks: any[];
-    version: string;
-};
+import './app.css';
 
 type PageSchema = {
     id: string;
@@ -71,7 +65,6 @@ function App() {
                 setSubscribed(true);
             } catch (error) {}
         }
-
     }, [])
 
     async function changePage(pageId: string, pageName: string, pageType: string) {

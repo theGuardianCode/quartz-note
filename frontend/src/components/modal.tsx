@@ -10,7 +10,7 @@ type ModalProps = {
 
 export function Modal({message, buttonText, buttonCallback, toggleModal}: ModalProps) {
     const [value, setValue] = useState("");
-    const [pageType, setPageType] = useState("");
+    const [pageType, setPageType] = useState("note");
 
     function handleClick() {
         buttonCallback(value, pageType);
@@ -29,7 +29,7 @@ export function Modal({message, buttonText, buttonCallback, toggleModal}: ModalP
             <div className="modal-content">
                 <span className="modal-header"><h2>{message}</h2><span className="close-btn" onClick={() => toggleModal(false)}>&#x2715;</span></span>
                 <select value={pageType} onChange={(e) => {setPageType(e.target.value)}} style={{fontSize: "24px", margin: "10px 0"}}>
-                    <option value="note" selected>Note</option>
+                    <option value="note">Note</option>
                     <option value="canvas">Canvas</option>
                 </select>
                 <input value={value} onInput={(e) => setValue((e.target as HTMLInputElement).value)} placeholder="Page name..."></input>
