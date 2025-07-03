@@ -12,11 +12,13 @@ import { EventsOn } from '../../wailsjs/runtime/runtime';
 import updateDatabase from "../scripts/updateDatabase";
 
 import './editor.css';
+import { ProcessTransaction } from "../../wailsjs/go/main/Database";
 
 type PageSchema = {
     id: string;
     name: string;
     type: string;
+    cloud: boolean;
 };
 
 type EditorProps = {
@@ -35,15 +37,28 @@ export function Editor({ initialData, page }: EditorProps) {
         if (editor.current && hasInitialised.current) {
             editor.current.isReady.then(() => {
                 editor.current?.save().then(async (output) => {
-                    setData(output)
-                    updateDatabase(output.blocks, activePage.current?.id!, (success: boolean, err: any) => {
-                        if (success) {
-                            console.log("Blocks saved successfully!");
-                        } else {
-                            console.log(`Error saving blocks:`)
-                            console.log(err)
-                        }
-                    });
+                    setData(output);
+                    if (activePage.current?.cloud) {
+                        updateDatabase(output.blocks, activePage.current?.id!, (success: boolean, err: any) => {
+                            if (success) {
+                                console.log("Blocks saved successfully!");
+                            } else {
+                                console.log(`Error saving blocks:`)
+                                console.log(err)
+                            }
+                        });
+                    } else {
+                        const serialisedBlocks = output.blocks.map((block) => {
+                            return ({
+                                id: block.id!,
+                                pageId: activePage.current?.id!,
+                                created_at: Math.floor(new Date().getTime() / 1000),
+                                type: block.type,
+                                data: JSON.stringify(block.data)
+                            });
+                        });
+                        ProcessTransaction(serialisedBlocks, activePage.current?.id!)
+                    }
                 });
             });
         }
@@ -83,6 +98,7 @@ export function Editor({ initialData, page }: EditorProps) {
                 editor.current?.render(initialData);
             })
         }
+        setData(initialData)
     }, [initialData])
 
     useEffect(() => {
@@ -96,7 +112,7 @@ export function Editor({ initialData, page }: EditorProps) {
                 <span className="title-container"><h2>{page.name}</h2></span>
                 <div id="editorjs"></div>
             </div>
-            {showChat ? <ChatPane pageContents={data.blocks} pageId={page.id} hideChat={() => setShowChat(false)}/> : <button onClick={() => setShowChat(true)}>&lt;</button> }
+            {showChat ? <ChatPane pageContents={data.blocks} page={page} hideChat={() => setShowChat(false)}/> : <button onClick={() => setShowChat(true)}>&lt;</button> }
         </>
     );
 }

@@ -7,6 +7,14 @@ li {
     cursor: pointer;
     padding: 5px 10px;
     border-radius: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.page-title > img {
+    width: 18px;
+    height: auto;
+    margin-left: 5px;
 }
 
 .page-title:hover {

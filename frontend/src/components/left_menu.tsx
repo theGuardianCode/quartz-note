@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../scripts/connection';
 import { EventsOn } from '../../wailsjs/runtime/runtime';
-import './left_menu.css';
 import { User } from '@supabase/supabase-js';
+import cloud from '../assets/images/cloud.png'
+import './left_menu.css';
 
 type LeftMenuProps = {
     pages: any[],
@@ -43,7 +44,7 @@ export function LeftMenu({pages, changePage, showCreateModal, showAccountModal, 
                 <ul>
                     {pages.map(page => (
                         <li className="page-container" key={page.id}>
-                            <span className="page-title" onClick={() => changePage(page.id, page.name, page.type)}>{page.name}</span><button>&#8942;</button>
+                            <span className="page-title" onClick={() => changePage(page.id, page.name, page.type, page.cloud)}>{page.name} {page.cloud ? (<img src={cloud}/>) : null}</span><button>&#8942;</button>
                         </li>
                     ))}
                 </ul>

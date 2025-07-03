@@ -11,9 +11,10 @@ type ModalProps = {
 export function Modal({message, buttonText, buttonCallback, toggleModal}: ModalProps) {
     const [value, setValue] = useState("");
     const [pageType, setPageType] = useState("note");
+    const [cloud, setCloud] = useState(false);
 
     function handleClick() {
-        buttonCallback(value, pageType);
+        buttonCallback(value, pageType, cloud);
         toggleModal(false);
     }
 
@@ -33,6 +34,10 @@ export function Modal({message, buttonText, buttonCallback, toggleModal}: ModalP
                     <option value="canvas">Canvas</option>
                 </select>
                 <input value={value} onInput={(e) => setValue((e.target as HTMLInputElement).value)} placeholder="Page name..."></input>
+                <div className="cloud-option">
+                    <input type="checkbox" name="cloud" checked={cloud} onChange={() => setCloud(!cloud)}/> 
+                    <label htmlFor="cloud">Store in cloud</label>
+                </div>
                 <button onClick={handleClick}>{buttonText}</button>
             </div>
         </div>

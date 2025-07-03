@@ -18,6 +18,7 @@ var assets embed.FS
 func main() {
 	// Create an instance of the app structure
 	app := NewApp()
+	app.db = InitDB("quartz.db")
 
 	AppMenu := menu.NewMenu()
 	if gr.GOOS == "darwin" {
@@ -48,6 +49,7 @@ func main() {
 		Menu:      AppMenu,
 		Bind: []interface{}{
 			app,
+			app.db,
 		},
 	})
 

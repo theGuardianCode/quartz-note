@@ -7,14 +7,22 @@ import { OutputBlockData } from "@editorjs/editorjs";
 import { marked } from "marked";
 
 import "./chat.css";
+import { LoadMessages, SaveMessages } from "../../wailsjs/go/main/Database";
+
+type PageSchema = {
+    id: string;
+    name: string;
+    type: string;
+    cloud: boolean;
+};
 
 type ChatProps = {
     pageContents: OutputBlockData[];
-    pageId: string | undefined;
+    page: PageSchema;
     hideChat: Function;
 };
 
-export function ChatPane({pageContents, pageId, hideChat}: ChatProps) {
+export function ChatPane({pageContents, page, hideChat}: ChatProps) {
     let chat = useRef<Chat>();
     const [conversation, setConversation] = useState<any[]>([]);
     const [message, setMessage] = useState("");
@@ -49,14 +57,18 @@ export function ChatPane({pageContents, pageId, hideChat}: ChatProps) {
             setConversation(messageListRef.current);
 
             // Update db with chat messages
-            saveMessages(messageListRef.current);
+            if (page.cloud) {
+                saveMessages(messageListRef.current);
+            } else {
+                const formattedMessages = messageListRef.current.map(message => ({role: message.role, parts: [{text: message.text}]}))
+                SaveMessages(page.id, JSON.stringify(formattedMessages))
+            }
         }
     }
 
     async function saveMessages(messages: any[]) {
         const formattedMessages = messages.map(message => ({role: message.role, parts: [{text: message.text}]}))
-        console.log(formattedMessages);
-        const { data, error } = await supabase.from('pages').update({chatMessages: formattedMessages}).eq('id', pageId);
+        const { data, error } = await supabase.from('pages').update({chatMessages: formattedMessages}).eq('id', page.id);
         if (error) {
             console.log("error updated messages");
             console.log(error);
@@ -66,10 +78,27 @@ export function ChatPane({pageContents, pageId, hideChat}: ChatProps) {
     useEffect(() => {
         const constructChat = async () => {
             // Retrieve chat history
-            const loadChatHistory = async () => {
-                const { data, error } = await supabase.from('pages').select('chatMessages').eq('id', pageId);
-                if (data) {
-                    const history = data[0].chatMessages;
+            if (page.cloud) {
+                const loadChatHistory = async () => {
+                    const { data, error } = await supabase.from('pages').select('chatMessages').eq('id', page.id);
+                    if (data) {
+                        const history = data[0].chatMessages;
+                        console.log(history)
+                        chat.current = await createChat(history);
+                        const formattedMessages = history.map((message: any) => {
+                            const record = {id: idCounter.current, role: message.role, text: message.parts[0].text};
+                            idCounter.current += 1;
+                            return record;
+                        });
+                        messageListRef.current = formattedMessages;
+                        setConversation(messageListRef.current);
+                    }
+                }
+                loadChatHistory();
+            } else {
+                LoadMessages(page.id).then(async (messages) => {
+                    const history = JSON.parse(messages)
+                    console.log(history)
                     chat.current = await createChat(history);
                     const formattedMessages = history.map((message: any) => {
                         const record = {id: idCounter.current, role: message.role, text: message.parts[0].text};
@@ -77,14 +106,13 @@ export function ChatPane({pageContents, pageId, hideChat}: ChatProps) {
                         return record;
                     });
                     messageListRef.current = formattedMessages;
-                    setConversation(messageListRef.current);
-                }
+                    setConversation(messageListRef.current)
+                });
             }
-            loadChatHistory();
         };
 
         constructChat();
-    }, [pageId]);
+    }, [page]);
 
     return (
         <div className="ai-chat">
@@ -93,6 +121,7 @@ export function ChatPane({pageContents, pageId, hideChat}: ChatProps) {
             </div>
             <ul>
                 {conversation.map((msg) => {
+                    console.log(msg.text)
                     return <li key={msg.id} className={`msg-box ${msg.role}`} dangerouslySetInnerHTML={{__html: marked.parse(msg.text)}}></li>
                 })}
             </ul>

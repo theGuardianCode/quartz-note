@@ -6,12 +6,15 @@ import { AccountModal } from './components/account_modal';
 import { v4 as uuidv4 } from 'uuid';
 import { Session, User, WeakPassword } from '@supabase/supabase-js';
 import { Switcher } from './components/switcher';
+import { EventsEmit } from '../wailsjs/runtime/runtime';
+import { ListPages } from '../wailsjs/go/main/Database'
 import './app.css';
 
 type PageSchema = {
     id: string;
     name: string;
     type: string;
+    cloud: boolean;
 };
 
 type AuthDataSchema = {
@@ -28,7 +31,7 @@ type PageSchemaDb = {
     id: string;
     created_at: number;
     name: string;
-    userId: string
+    userId: string;
 }
 
 function App() {
@@ -67,8 +70,8 @@ function App() {
         }
     }, [])
 
-    async function changePage(pageId: string, pageName: string, pageType: string) {
-        setActivePage({id: pageId, name: pageName, type: pageType})
+    async function changePage(pageId: string, pageName: string, pageType: string, cloud: boolean) {
+        setActivePage({id: pageId, name: pageName, type: pageType, cloud: cloud})
     }
 
     async function login(email: string, password: string) {
@@ -100,17 +103,29 @@ function App() {
         if (error != null) {
             console.log(error);
         } else {
-            setPages(pageData);
+            ListPages().then((localPages) => {
+                localPages = localPages.map((page) => ({...page, cloud: false}));
+                const cloudPages = pageData.map((page) => ({...page, cloud: true}));
+                const pageList = [...cloudPages, ...localPages];
+                setPages(pageList);
+            });
         }
     }
 
-    async function createNote(filename: string, pageType: string) {
-        const { data, error } = await supabase.auth.getUser();
-        const schema = {id: uuidv4(), name: filename, userId: data.user?.id, type: pageType};
-        const { error: err } = await supabase.from('pages').insert(schema).select();
-        if (err) {
-            throw err;
+    async function createNote(filename: string, pageType: string, cloud: boolean) {
+        if (cloud) {
+            const { data, error } = await supabase.auth.getUser();
+            const pageId = uuidv4();
+            const schema = {id: pageId, name: filename, userId: data.user?.id, type: pageType};
+            const { error: err } = await supabase.from('pages').insert(schema).select();
+            if (err) {
+                throw err;
+            }
+        } else {
+            EventsEmit("create-page", filename, pageType);
+            setTimeout(loadPages, 500);
         }
+
     }
 
     return (
